@@ -49,4 +49,18 @@ public class FeatureManager {
 		return setState(name, false);
 	}
 
+	public void addFeature(PVPFeature f) {
+		features.add(f);
+	}
+
+	public boolean removeAll() {
+		try {
+			features.clear();
+		} catch (Exception e) {
+			return false;
+		}
+
+		return true;
+	}
+
 }

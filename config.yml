@@ -1,0 +1,5 @@
+features:
+    enderpearl:
+        enabled: true
+        max-height: 186
+        give-back: true
