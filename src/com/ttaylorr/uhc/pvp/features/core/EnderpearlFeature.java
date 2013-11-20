@@ -22,17 +22,19 @@ public class EnderpearlFeature extends PVPFeature {
 
 	@EventHandler
 	public void onEnderPearlThrow(PlayerTeleportEvent event) {
-		if(event.getCause() != TeleportCause.ENDER_PEARL)
-			return;
-		
-		if(event.getTo().getY() < MAX_HEIGHT)
-			return;
-		
-		if(GIVE_BACK_PEARL) {
-			event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL, 1));
+		if(this.isEnabled()) {
+			if(event.getCause() != TeleportCause.ENDER_PEARL)
+				return;
+			
+			if(event.getTo().getY() < MAX_HEIGHT)
+				return;
+			
+			if(GIVE_BACK_PEARL) {
+				event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL, 1));
+			}
+			
+			event.setCancelled(true);
 		}
-		
-		event.setCancelled(true);
 	}
 	
 }
