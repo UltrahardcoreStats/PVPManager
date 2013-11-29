@@ -1,5 +1,9 @@
 package com.ttaylorr.uhc.pvp.services;
 
-public interface CombatTagger {
+import org.bukkit.entity.Player;
 
+public interface CombatTagger {
+  void tag(Player player);
+  void untag(Player player);
+  boolean isTagged(Player player);
 }
