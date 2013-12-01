@@ -6,5 +6,5 @@ import org.bukkit.entity.Player;
 public interface SpawnManager {
 
 	public Location respawn(Player p);
-	
+
 }

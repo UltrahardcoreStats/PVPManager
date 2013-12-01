@@ -10,24 +10,26 @@ import org.bukkit.entity.Player;
 import com.ttaylorr.uhc.pvp.services.PVPManager;
 
 public class UHCPVPManager implements PVPManager, Feature {
-  SpawnManager spawnManager;
-  PVPRestrictionManager pvpRestrictionManager;
-  CombatTagger combatTagger;
-  @Override
-  public void onEnable() {
-    spawnManager = (SpawnManager)Bukkit.getServicesManager().getRegistration(SpawnManager.class);
-    pvpRestrictionManager = (PVPRestrictionManager)Bukkit.getServicesManager().getRegistration(PVPRestrictionManager.class);
-    combatTagger = (CombatTagger)Bukkit.getServicesManager().getRegistration(CombatTagger.class);
+	SpawnManager spawnManager;
+	PVPRestrictionManager pvpRestrictionManager;
+	CombatTagger combatTagger;
 
-    // TODO: Initialize the rest. Add listeners to track players.
-  }
+	@Override
+	public void onEnable() {
+		spawnManager = (SpawnManager) Bukkit.getServicesManager().getRegistration(SpawnManager.class);
+		pvpRestrictionManager = (PVPRestrictionManager) Bukkit.getServicesManager().getRegistration(PVPRestrictionManager.class);
+		combatTagger = (CombatTagger) Bukkit.getServicesManager().getRegistration(CombatTagger.class);
 
-  @Override
-  public void onDisable() {
-    //To change body of implemented methods use File | Settings | File Templates.
-  }
+		// TODO: Initialize the rest. Add listeners to track players.
+	}
 
-  @Override
+	@Override
+	public void onDisable() {
+		// To change body of implemented methods use File | Settings | File
+		// Templates.
+	}
+
+	@Override
 	public boolean enter(Player p) {
 		// TODO Auto-generated method stub
 		return false;
