@@ -14,7 +14,6 @@ public class UHCPVPManager implements PVPManager, Feature {
 	PVPRestrictionManager pvpRestrictionManager;
 	CombatTagger combatTagger;
 
-	@Override
 	public void onEnable() {
 		spawnManager = (SpawnManager) Bukkit.getServicesManager().getRegistration(SpawnManager.class);
 		pvpRestrictionManager = (PVPRestrictionManager) Bukkit.getServicesManager().getRegistration(PVPRestrictionManager.class);
@@ -23,19 +22,15 @@ public class UHCPVPManager implements PVPManager, Feature {
 		// TODO: Initialize the rest. Add listeners to track players.
 	}
 
-	@Override
 	public void onDisable() {
-		// To change body of implemented methods use File | Settings | File
-		// Templates.
+        // TODO Auto-generated method stub
 	}
 
-	@Override
 	public boolean enter(Player p) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public boolean exit(Player p) {
 		// TODO Auto-generated method stub
 		return false;

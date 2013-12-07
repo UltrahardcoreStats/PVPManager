@@ -5,33 +5,25 @@ import com.ttaylorr.uhc.pvp.services.CombatTagger;
 import org.bukkit.entity.Player;
 
 public class UHCCombatTagger implements CombatTagger, Feature {
-	@Override
-	public void onEnable() {
-		// To change body of implemented methods use File | Settings | File
-		// Templates.
+
+    public void onEnable() {
+        // TODO Auto-generated method stub
 	}
 
-	@Override
-	public void onDisable() {
-		// To change body of implemented methods use File | Settings | File
-		// Templates.
+    public void onDisable() {
+        // TODO Auto-generated method stub
 	}
 
-	@Override
 	public void tag(Player player) {
-		// To change body of implemented methods use File | Settings | File
-		// Templates.
+        // TODO Auto-generated method stub
 	}
 
-	@Override
 	public void untag(Player player) {
-		// To change body of implemented methods use File | Settings | File
-		// Templates.
+        // TODO Auto-generated method stub
 	}
 
-	@Override
 	public boolean isTagged(Player player) {
-		return false; // To change body of implemented methods use File |
-						// Settings | File Templates.
+        // TODO Auto-generated method stub
+		return false;
 	}
 }

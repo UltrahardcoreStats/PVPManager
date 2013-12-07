@@ -7,10 +7,10 @@ import com.ttaylorr.uhc.pvp.services.UserManager;
 import org.bukkit.Bukkit;
 
 public class UHCUserManager implements UserManager, Feature {
-	PVPManager pvpManager;
+	
+    PVPManager pvpManager;
 	LobbyManager lobbyManager;
 
-	@Override
 	public void onEnable() {
 		pvpManager = (PVPManager) Bukkit.getServicesManager().getRegistration(PVPManager.class);
 		lobbyManager = (LobbyManager) Bukkit.getServicesManager().getRegistration(LobbyManager.class);
@@ -19,9 +19,7 @@ public class UHCUserManager implements UserManager, Feature {
 		// join) etc.
 	}
 
-	@Override
 	public void onDisable() {
-		// To change body of implemented methods use File | Settings | File
-		// Templates.
+        // TODO Auto-generated method stub
 	}
 }
