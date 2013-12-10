@@ -4,8 +4,8 @@ import org.bukkit.entity.Player;
 
 public interface PVPManager {
 
-	public boolean enter(Player p);
+    public boolean enter(Player p);
 
-	public boolean exit(Player p);
+    public boolean exit(Player p);
 
 }

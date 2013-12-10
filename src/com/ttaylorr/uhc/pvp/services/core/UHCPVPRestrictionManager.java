@@ -4,12 +4,13 @@ import com.ttaylorr.uhc.pvp.Feature;
 import com.ttaylorr.uhc.pvp.services.PVPRestrictionManager;
 
 public class UHCPVPRestrictionManager implements PVPRestrictionManager, Feature {
-
-    public void onEnable() {
-        // TODO Auto-generated method stub
-	}
+    @Override
+    public boolean onEnable() {
+        //To change body of implemented methods use File | Settings | File Templates.
+        return false;
+    }
 
     public void onDisable() {
         // TODO Auto-generated method stub
-	}
+    }
 }
