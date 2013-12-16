@@ -2,3 +2,6 @@ name: ${project.name}
 version: ${project.version}
 description: ${project.description}
 main: ${plugin.mainClass}
+commands:
+  pvp:
+    permission: pvpmanager.command
