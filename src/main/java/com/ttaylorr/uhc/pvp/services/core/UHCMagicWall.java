@@ -12,40 +12,42 @@ import java.util.*;
 public class UHCMagicWall implements PVPUtility {
     ProtectedRegion region;
     List<ProtectedRegion> children;
+    WorldGuardPlugin worldGuard;
 
     public UHCMagicWall(String world, String region) {
-        this.region = WorldGuardPlugin.inst().getRegionManager(Bukkit.getWorld(world)).getRegion(region);
+        worldGuard = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin("WorldGuard");
+        this.region = worldGuard.getRegionManager(Bukkit.getWorld(world)).getRegion(region);
         children = getChildren(this.region, Bukkit.getWorld(world));
     }
 
     @Override
     public void subscribe(Player player) {
-        //To change body of implemented methods use File | Settings | File Templates.
+
     }
 
     @Override
     public void unsubscribe(Player player) {
-        //To change body of implemented methods use File | Settings | File Templates.
+
     }
 
     /**
-     * Fetches the subregions of a WorldGuard @ProtectedRegion.
+     * Fetches the sub-regions of a WorldGuard @ProtectedRegion.
      *
      * @param region The region to get the children from.
      * @return The children.
      */
     private List<ProtectedRegion> getChildren(ProtectedRegion region, World world) {
-        HashMap<String, List<ProtectedRegion>> subRegions = new HashMap<String, List<ProtectedRegion>>();
-        for (ProtectedRegion subRegion : WorldGuardPlugin.inst().getRegionManager(world).getRegions().values()) {
+        HashMap<String, List<ProtectedRegion>> subRegions = new HashMap<>();
+        for (ProtectedRegion subRegion : worldGuard.getRegionManager(world).getRegions().values()) {
             String parentID = subRegion.getParent().getId();
             if (!subRegions.containsKey(parentID)) {
                 subRegions.put(parentID, new ArrayList<ProtectedRegion>());
             }
             subRegions.get(parentID).add(subRegion);
         }
-        Queue<ProtectedRegion> regionQueue = new LinkedList<ProtectedRegion>();
+        Queue<ProtectedRegion> regionQueue = new LinkedList<>();
         regionQueue.add(region);
-        List<ProtectedRegion> result = new LinkedList<ProtectedRegion>();
+        List<ProtectedRegion> result = new LinkedList<>();
         while (regionQueue.size() > 0) {
             ProtectedRegion current = regionQueue.remove();
             result.add(current);

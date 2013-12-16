@@ -27,7 +27,7 @@ public class UHCPVPManager implements PVPManager, Feature {
         pvpRestrictionManager = Bukkit.getServicesManager().getRegistration(PVPRestrictionManager.class).getProvider();
         combatTagger = Bukkit.getServicesManager().getRegistration(CombatTagger.class).getProvider();
 
-        utilityList = new ArrayList<PVPUtility>();
+        utilityList = new ArrayList<>();
         for (RegisteredServiceProvider<PVPUtility> provider : Bukkit.getServicesManager().getRegistrations(PVPUtility.class)) {
             utilityList.add(provider.getProvider());
         }

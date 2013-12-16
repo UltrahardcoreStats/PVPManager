@@ -25,7 +25,7 @@
 
     <properties>
         <plugin.prefix>${project.name}</plugin.prefix>
-        <plugin.mainClass>com.ttaylorr.uhc.pvp.PVPManager</plugin.mainClass>
+        <plugin.mainClass>com.ttaylorr.uhc.pvp.PVPManagerPlugin</plugin.mainClass>
     </properties>
 
     <dependencies>
@@ -35,6 +35,13 @@
             <version>1.7.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldguard</artifactId>
+            <version>5.7.3</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/WorldGuard.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -43,6 +50,11 @@
             <name>Bukkit repo</name>
             <url>http://repo.bukkit.org/content/groups/public</url>
         </repository>
+        <!--<repository>-->
+            <!--<id>sk89q-repo</id>-->
+            <!--<name>sk89q repo</name>-->
+            <!--<url>http://maven.sk89q.com/repo</url>-->
+        <!--</repository>-->
     </repositories>
 
     <build>
