@@ -2,6 +2,7 @@ package com.ttaylorr.uhc.pvp.services.core;
 
 import com.ttaylorr.uhc.pvp.Feature;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
+import com.ttaylorr.uhc.pvp.services.GameMode;
 import com.ttaylorr.uhc.pvp.services.LobbyManager;
 import com.ttaylorr.uhc.pvp.services.PVPManager;
 import com.ttaylorr.uhc.pvp.services.UserManager;
@@ -33,15 +34,17 @@ public class UHCUserManager extends UHCServiceBase implements UserManager, Featu
     }
 
     public void onDisable() {
-        // TODO Auto-generated method stub
+
     }
 
     public void subscribe(Player player) {
-        getUserData(player).subscribed = true;
+        lobbyManager.enter(player);
+        getUserData(player).gameMode = lobbyManager;
     }
 
     public void unsubscribe(Player player) {
-        getUserData(player).subscribed = false;
+        UserData userData = getUserData(player);
+        userData.gameMode.exit(player);
     }
 
     private UserData getUserData(Player player) {
@@ -49,6 +52,10 @@ public class UHCUserManager extends UHCServiceBase implements UserManager, Featu
     }
 
     static class UserData {
-        public boolean subscribed;
+        public GameMode gameMode;
+
+        public boolean isSubscribed() {
+            return gameMode != null;
+        }
     }
 }
