@@ -58,7 +58,6 @@ public class PlayerDataManager implements Listener {
     }
 
     public static <T> Factory<T> tryConstructFactory(Class<T> klass) {
-        //noinspection unchecked
         for(Constructor<T> constructor : (Constructor<T>[])klass.getConstructors()) {
             Class<?>[] parameterTypes = constructor.getParameterTypes();
             if(parameterTypes.length == 0)
