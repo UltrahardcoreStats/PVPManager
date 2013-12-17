@@ -42,11 +42,11 @@ public class PVPManagerPlugin extends JavaPlugin {
         features = new ArrayList<>();
         subCommands = new PVPManagerCommandMap();
         registerDefault(CombatTagger.class, new UHCCombatTagger());
-        registerDefault(LobbyManager.class, new UHCLobbyManager());
+        registerDefault(LobbyManager.class, new UHCLobbyManager(this));
         registerDefault(PVPRestrictionManager.class, new UHCPVPRestrictionManager());
         registerDefault(SpawnManager.class, new UHCSpawnManager());
         // Depends on SpawnManager, PVPRestrictionManager and CombatTagger
-        registerDefault(com.ttaylorr.uhc.pvp.services.PVPManager.class, new UHCPVPManager());
+        registerDefault(com.ttaylorr.uhc.pvp.services.PVPManager.class, new UHCPVPManager(this));
         // Depends on PVPManagerPlugin, LobbyManager
         registerDefault(UserManager.class, new UHCUserManager(this));
 
