@@ -1,10 +1,15 @@
 package com.ttaylorr.uhc.pvp.services.core;
 
 import com.ttaylorr.uhc.pvp.Feature;
+import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.services.LobbyManager;
 import org.bukkit.entity.Player;
 
-public class UHCLobbyManager implements LobbyManager, Feature {
+public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Feature {
+    public UHCLobbyManager(PVPManagerPlugin plugin) {
+        super(plugin);
+    }
+
     @Override
     public boolean onEnable() {
         //To change body of implemented methods use File | Settings | File Templates.
@@ -15,13 +20,13 @@ public class UHCLobbyManager implements LobbyManager, Feature {
         // TODO Auto-generated method stub
     }
 
-    public boolean enter(Player p) {
-        // TODO Auto-generated method stub
-        return false;
+    @Override
+    protected void onEnter(Player p) {
+
     }
 
-    public boolean exit(Player p) {
-        // TODO Auto-generated method stub
+    @Override
+    protected boolean onExit(Player p) {
         return false;
     }
 
