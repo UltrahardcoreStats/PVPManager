@@ -1,6 +1,7 @@
 package com.ttaylorr.uhc.pvp.services.core;
 
 import com.ttaylorr.uhc.pvp.Feature;
+import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.services.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -9,11 +10,15 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UHCPVPManager implements PVPManager, Feature {
+public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Feature {
     SpawnManager spawnManager;
     PVPRestrictionManager pvpRestrictionManager;
     CombatTagger combatTagger;
     List<PVPUtility> utilityList;
+
+    public UHCPVPManager(PVPManagerPlugin plugin) {
+        super(plugin);
+    }
 
     @Override
     public boolean onEnable() {
@@ -43,18 +48,15 @@ public class UHCPVPManager implements PVPManager, Feature {
     }
 
     @Override
-    public boolean enter(Player p) {
-        // TODO Auto-generated method stub
+    protected void onEnter(Player p) {
         for (PVPUtility utility : utilityList)
             utility.subscribe(p);
-        return false;
     }
 
-    public boolean exit(Player p) {
-        // TODO Auto-generated method stub
+    @Override
+    protected boolean onExit(Player p) {
         for (PVPUtility utility : utilityList)
             utility.unsubscribe(p);
-        return false;
+        return true;
     }
-
 }
