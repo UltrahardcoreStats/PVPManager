@@ -42,11 +42,11 @@ public class PlayerDataManager implements Listener {
         playerDataMap.remove(pqe.getPlayer());
     }
 
+    @SuppressWarnings("unchecked")
     public <T> Factory<T> getFactory(Class<T> klass) {
         if(!factories.containsKey(klass)) {
             factories.put(klass, getDefaultFactory(klass));
         }
-        //noinspection unchecked
         return (Factory<T>) factories.get(klass);
     }
 
@@ -57,6 +57,7 @@ public class PlayerDataManager implements Listener {
         return defaultFactory;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> Factory<T> tryConstructFactory(Class<T> klass) {
         for(Constructor<T> constructor : (Constructor<T>[])klass.getConstructors()) {
             Class<?>[] parameterTypes = constructor.getParameterTypes();
