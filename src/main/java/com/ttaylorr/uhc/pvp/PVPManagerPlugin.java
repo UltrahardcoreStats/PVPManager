@@ -83,9 +83,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         if(service instanceof CommandListener) {
             CommandListener commandListener = (CommandListener)service;
             for(Command command : commandListener.getCommands()) {
-                for(String alias : command.getAliases()) {
-                    subCommands.register(alias, command);
-                }
+                subCommands.register("pvpmanager", command);
             }
         }
     }
