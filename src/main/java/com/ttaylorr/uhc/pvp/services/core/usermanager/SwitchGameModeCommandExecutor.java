@@ -16,7 +16,7 @@ public class SwitchGameModeCommandExecutor implements CommandExecutor {
     private UHCUserManager userManager;
     private GameMode to;
 
-    public SwitchGameModeCommandExecutor(UHCUserManager userManager, String name, String alreadyInMessage, GameMode to) {
+    public SwitchGameModeCommandExecutor(UHCUserManager userManager, String alreadyInMessage, GameMode to) {
         this.userManager = userManager;
         this.alreadyInMessage = alreadyInMessage;
         this.to = to;
@@ -35,6 +35,8 @@ public class SwitchGameModeCommandExecutor implements CommandExecutor {
         if(userData.gameMode.exit(player)) {
             to.enter(player);
             userData.gameMode = to;
+            return true;
         }
+        return false;
     }
 }
