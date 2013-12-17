@@ -1,8 +1,7 @@
-package com.ttaylorr.uhc.pvp.services.util;
+package com.ttaylorr.uhc.pvp.util;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class Message {
     public static void message(CommandSender sender, String message) {

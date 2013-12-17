@@ -1,4 +1,4 @@
-package com.ttaylorr.uhc.pvp.services.util;
+package com.ttaylorr.uhc.pvp.util;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

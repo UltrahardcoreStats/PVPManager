@@ -2,14 +2,13 @@ package com.ttaylorr.uhc.pvp.services.core.usermanager;
 
 import com.ttaylorr.uhc.pvp.services.GameMode;
 import com.ttaylorr.uhc.pvp.services.core.UHCUserManager;
-import com.ttaylorr.uhc.pvp.services.util.Checker;
-import com.ttaylorr.uhc.pvp.services.util.PVPManagerCommand;
+import com.ttaylorr.uhc.pvp.util.Checker;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import static com.ttaylorr.uhc.pvp.services.util.Message.warn;
+import static com.ttaylorr.uhc.pvp.util.Message.warn;
 
 public class SwitchGameModeCommandExecutor implements CommandExecutor {
     private String alreadyInMessage;
