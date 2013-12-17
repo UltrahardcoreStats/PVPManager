@@ -8,6 +8,7 @@ import java.util.List;
 
 public class PVPManagerCommand extends Command {
     CommandExecutor executor;
+
     public PVPManagerCommand(CommandExecutor executor, String name) {
         this(executor, name, name);
     }
@@ -30,6 +31,14 @@ public class PVPManagerCommand extends Command {
         this.executor = executor;
         setPermission("pvpmanager.command." + permission);
         setPermissionMessage("You are not allowed to run /pvp " + name);
+    }
+
+    public CommandExecutor getExecutor() {
+        return executor;
+    }
+
+    public void setExecutor(CommandExecutor executor) {
+        this.executor = executor;
     }
 
     @Override
