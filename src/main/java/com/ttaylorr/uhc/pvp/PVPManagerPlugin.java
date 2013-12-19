@@ -75,7 +75,7 @@ public class PVPManagerPlugin extends JavaPlugin {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if(args.length == 0)
             return super.onTabComplete(sender, command, alias, args);
-        return subCommands.tabComplete(sender, StringUtils.join(args));
+        return subCommands.tabComplete(sender, StringUtils.join(args, ' '));
     }
 
     public PlayerDataManager getDataManager() {

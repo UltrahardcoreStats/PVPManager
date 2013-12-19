@@ -1,8 +1,10 @@
 package com.ttaylorr.uhc.pvp.util;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.util.StringUtil;
 
 import java.util.List;
 
@@ -44,5 +46,12 @@ public class PVPManagerCommand extends Command {
     @Override
     public boolean execute(CommandSender commandSender, String s, String[] strings) {
         return executor.onCommand(commandSender, this, s, strings);
+    }
+
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+        List<String> strings = super.tabComplete(sender, alias, args);
+        Debug.info("PVPManagerCommand#tabComplete: " + StringUtils.join(strings, " "));
+        return strings;
     }
 }
