@@ -46,6 +46,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         registerProviders();
         enableFeatures();
 
+        subCommands.register("pvpmanager", new ReloadCommand());
     }
 
     private void enableFeatures() {
@@ -103,6 +104,22 @@ public class PVPManagerPlugin extends JavaPlugin {
             for(Command command : commandListener.getCommands()) {
                 subCommands.register("pvpmanager", command);
             }
+        }
+    }
+
+    private class ReloadCommand extends PVPManagerCommand implements CommandExecutor {
+        private ReloadCommand() {
+            super(null, "reload");
+            setExecutor(this);
+        }
+
+        @Override
+        public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+            reloadConfig();
+            getConfig().options().copyDefaults(true);
+            saveConfig();
+            Message.success(commandSender, "Config reloaded");
+            return true;
         }
     }
 }
