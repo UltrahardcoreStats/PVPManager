@@ -1,0 +1,3 @@
+arena:
+  region: arena
+  spawnpoints: [] # Serialized locations
