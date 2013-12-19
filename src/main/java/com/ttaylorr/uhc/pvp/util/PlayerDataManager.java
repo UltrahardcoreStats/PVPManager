@@ -1,9 +1,13 @@
 package com.ttaylorr.uhc.pvp.util;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.lang.reflect.Constructor;
@@ -16,6 +20,8 @@ public class PlayerDataManager implements Listener {
     public PlayerDataManager() {
         playerDataMap = new HashMap<>();
         factories = new HashMap<>();
+        for(Player player : Bukkit.getOnlinePlayers())
+            subscribe(player);
     }
     public <T> T get(Player player, Class<T> klass) {
         PlayerData playerData = get(player);
@@ -32,14 +38,40 @@ public class PlayerDataManager implements Listener {
         factories.put(klass, factory);
     }
 
-    @EventHandler
-    private void onPlayerJoin(PlayerJoinEvent pje) {
-        playerDataMap.put(pje.getPlayer(), new PlayerData(this, pje.getPlayer()));
+    private void subscribe(Player player) {
+        Debug.info("PlayerDataManager: "
+                + ChatColor.GREEN + ChatColor.BOLD + "+ "
+                + ChatColor.RESET + player.getName());
+        playerDataMap.put(player, new PlayerData(this, player));
     }
 
-    @EventHandler
+    private void unsubscribe(Player player) {
+        Debug.info("PlayerDataManager: "
+                + ChatColor.RED + ChatColor.BOLD + "- "
+                + ChatColor.RESET + player.getName());
+        playerDataMap.remove(player);
+    }
+
+    /**
+     * Create player data before the PlayerJoinEvent.
+     * @param ple The event
+     */
+    @EventHandler(priority = EventPriority.MONITOR)
+    private void onPlayerLogin(PlayerLoginEvent ple) {
+        if(ple.getResult() != PlayerLoginEvent.Result.ALLOWED)
+            return;
+        Player player = ple.getPlayer();
+        subscribe(player);
+    }
+
+    /**
+     * Clean up player data when he logs out
+     * @param pqe The event
+     */
+    @EventHandler(priority = EventPriority.MONITOR)
     private void onPlayerQuit(PlayerQuitEvent pqe) {
-        playerDataMap.remove(pqe.getPlayer());
+        Player player = pqe.getPlayer();
+        unsubscribe(player);
     }
 
     @SuppressWarnings("unchecked")
@@ -50,7 +82,7 @@ public class PlayerDataManager implements Listener {
         return (Factory<T>) factories.get(klass);
     }
 
-    private <T> Factory<T> getDefaultFactory(Class<T> klass) {
+    private static <T> Factory<T> getDefaultFactory(Class<T> klass) {
         Factory<T> defaultFactory = tryConstructFactory(klass);
         if(defaultFactory == null)
             defaultFactory = new NullFactory<>();
@@ -69,7 +101,7 @@ public class PlayerDataManager implements Listener {
         return new NullFactory<>();
     }
 
-    static class DefaultFactory<T> implements Factory<T> {
+    private static class DefaultFactory<T> implements Factory<T> {
         Constructor<T> constructor;
 
         private DefaultFactory(Constructor<T> constructor) {
@@ -78,11 +110,12 @@ public class PlayerDataManager implements Listener {
 
         @Override
         public T construct(Player player) throws Exception {
+            Debug.info("PlayerDataManager: Constructed for player " + player.getName() + " " + constructor.getName());
             return constructor.newInstance();
         }
     }
 
-    static class DefaultFactoryWithPlayer<T> implements Factory<T> {
+    private static class DefaultFactoryWithPlayer<T> implements Factory<T> {
         Constructor<T> constructor;
 
         private DefaultFactoryWithPlayer(Constructor<T> constructor) {
