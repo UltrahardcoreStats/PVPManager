@@ -4,6 +4,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.ttaylorr.uhc.pvp.services.*;
 import com.ttaylorr.uhc.pvp.services.core.*;
 import com.ttaylorr.uhc.pvp.services.core.UHCUserManager;
+import com.ttaylorr.uhc.pvp.util.Debug;
 import com.ttaylorr.uhc.pvp.util.PVPManagerCommandMap;
 import com.ttaylorr.uhc.pvp.util.PlayerDataManager;
 import org.apache.commons.lang.StringUtils;
@@ -40,6 +41,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         instance = this;
         saveDefaultConfig();
         reloadConfig();
+        Debug.init(this);
         dataManager = new PlayerDataManager();
         Bukkit.getPluginManager().registerEvents(dataManager, this);
         features = new ArrayList<>();
