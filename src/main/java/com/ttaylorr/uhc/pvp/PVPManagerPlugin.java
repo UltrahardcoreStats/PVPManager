@@ -4,17 +4,17 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.ttaylorr.uhc.pvp.services.*;
 import com.ttaylorr.uhc.pvp.services.core.*;
 import com.ttaylorr.uhc.pvp.services.core.UHCUserManager;
-import com.ttaylorr.uhc.pvp.util.Debug;
-import com.ttaylorr.uhc.pvp.util.PVPManagerCommandMap;
-import com.ttaylorr.uhc.pvp.util.PlayerDataManager;
+import com.ttaylorr.uhc.pvp.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import sun.security.krb5.Config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,11 +39,21 @@ public class PVPManagerPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        saveDefaultConfig();
-        reloadConfig();
+        initializeConfig();
         Debug.init(this);
         dataManager = new PlayerDataManager();
         Bukkit.getPluginManager().registerEvents(dataManager, this);
+        registerProviders();
+        enableFeatures();
+
+    }
+
+    private void enableFeatures() {
+        for(Feature feature : features)
+            feature.onEnable();
+    }
+
+    private void registerProviders() {
         features = new ArrayList<>();
         subCommands = new PVPManagerCommandMap();
         registerDefault(CombatTagger.class, new UHCCombatTagger());
@@ -51,7 +61,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         registerDefault(PVPRestrictionManager.class, new UHCPVPRestrictionManager());
         registerDefault(SpawnManager.class, new UHCSpawnManager());
         // Depends on SpawnManager, PVPRestrictionManager and CombatTagger
-        registerDefault(com.ttaylorr.uhc.pvp.services.PVPManager.class, new UHCPVPManager(this));
+        registerDefault(PVPManager.class, new UHCPVPManager(this));
         // Depends on PVPManagerPlugin, LobbyManager
         registerDefault(UserManager.class, new UHCUserManager(this));
 
@@ -62,8 +72,11 @@ public class PVPManagerPlugin extends JavaPlugin {
                 registerDefault(PVPUtility.class, new UHCMagicWall("world", "hardcoded-regionname"));
             }
         }
-        for(Feature feature : features)
-            feature.onEnable();
+    }
+
+    private void initializeConfig() {
+        getConfig().options().copyDefaults(true);
+        saveConfig();
     }
 
     @Override
