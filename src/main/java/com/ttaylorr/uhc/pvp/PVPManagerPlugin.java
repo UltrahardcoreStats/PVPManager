@@ -38,6 +38,8 @@ public class PVPManagerPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        saveDefaultConfig();
+        reloadConfig();
         dataManager = new PlayerDataManager();
         features = new ArrayList<>();
         subCommands = new PVPManagerCommandMap();
