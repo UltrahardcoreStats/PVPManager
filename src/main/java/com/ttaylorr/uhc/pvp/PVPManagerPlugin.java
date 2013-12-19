@@ -41,6 +41,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         saveDefaultConfig();
         reloadConfig();
         dataManager = new PlayerDataManager();
+        Bukkit.getPluginManager().registerEvents(dataManager, this);
         features = new ArrayList<>();
         subCommands = new PVPManagerCommandMap();
         registerDefault(CombatTagger.class, new UHCCombatTagger());
