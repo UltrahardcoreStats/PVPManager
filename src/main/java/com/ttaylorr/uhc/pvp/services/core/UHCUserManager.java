@@ -48,6 +48,8 @@ public class UHCUserManager extends UHCServiceBase implements UserManager, Featu
 
         listener = new Listeners(this);
         Bukkit.getPluginManager().registerEvents(listener, getPlugin());
+        for(Player player : Bukkit.getOnlinePlayers())
+            subscribe(player);
         return true;
     }
 
