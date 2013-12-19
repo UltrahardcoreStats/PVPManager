@@ -1,5 +1,6 @@
 package com.ttaylorr.uhc.pvp.util;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandException;
@@ -7,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.util.StringUtil;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +25,7 @@ public class PVPManagerCommandMap extends SimpleCommandMap {
     public boolean dispatch(CommandSender sender, String commandLine) throws CommandException {
         String[] split = commandLine.split(" ", 2);
         String rawCommand = split[0];
-        String[] args = split[1].split(" ");
+        String[] args = split.length == 1 ? ArrayUtils.EMPTY_STRING_ARRAY : split[1].split(" ");
         Command command = getCommand(rawCommand);
         return command.execute(sender, rawCommand, args);
     }
