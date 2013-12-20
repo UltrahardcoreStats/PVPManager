@@ -2,20 +2,27 @@ package com.ttaylorr.uhc.pvp.services.core;
 
 import com.ttaylorr.uhc.pvp.Feature;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
+import com.ttaylorr.uhc.pvp.events.PlayerTaggedEvent;
 import com.ttaylorr.uhc.pvp.services.*;
 import com.ttaylorr.uhc.pvp.util.Continuation;
+import com.ttaylorr.uhc.pvp.util.ContinuationCounter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Feature {
+public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Feature, Listener {
     SpawnManager spawnManager;
     PVPRestrictionManager pvpRestrictionManager;
     CombatTagger combatTagger;
     List<PVPUtility> utilityList;
+    Map<Player, Continuation> exitters;
+
 
     public UHCPVPManager(PVPManagerPlugin plugin) {
         super(plugin);
@@ -38,9 +45,9 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
             utilityList.add(provider.getProvider());
         }
 
-        return true;
+        Bukkit.getPluginManager().registerEvents(this, getPlugin());
 
-        // TODO: Initialize the rest. Add listeners to track players.
+        return true;
     }
 
     @Override
@@ -56,7 +63,10 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
 
     @Override
     protected void onExit(Player p, Continuation continuation) {
+        if(combatTagger.isTagged(p))
+            continuation.failure();
         immediateExit(p);
+        new ContinuationCounter(continuation, p, 5, "%d seconds left...", "Exiting PVP!");
         continuation.success();
     }
 
@@ -64,5 +74,15 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
     protected void onImmediateExit(Player p) {
         for (PVPUtility utility : utilityList)
             utility.unsubscribe(p);
+    }
+
+    @EventHandler
+    private void onPlayerTagged(PlayerTaggedEvent pte) {
+        if(pte.getService() != combatTagger)
+            return;
+
+        if(exitters.containsKey(pte.getPlayer())) {
+            exitters.remove(pte.getPlayer()).failure();
+        }
     }
 }
