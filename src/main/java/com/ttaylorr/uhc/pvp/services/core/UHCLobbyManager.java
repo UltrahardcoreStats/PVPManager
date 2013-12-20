@@ -37,6 +37,10 @@ public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Fe
 
     @Override
     protected void onEnter(Player p) {
+        if(p.hasPermission("pvpmanager.join.teleport.bypass")) {
+            Debug.info("Skipped player " + p.getName() + " when teleporting to lobby spawn.");
+            return;
+        }
         p.teleport(getSpawn());
         p.setVelocity(new Vector());
     }

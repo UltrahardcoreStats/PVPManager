@@ -5,3 +5,7 @@ main: ${plugin.mainClass}
 commands:
   pvp:
     permission: pvpmanager.command
+permissions:
+  pvpmanager.join.teleport.bypass:
+    description: Allows you to bypass automatic teleporting when joining the lobby.
+    default: false
