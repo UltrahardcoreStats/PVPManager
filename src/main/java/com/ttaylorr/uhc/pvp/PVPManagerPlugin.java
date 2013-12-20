@@ -69,8 +69,9 @@ public class PVPManagerPlugin extends JavaPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
             WorldGuardPlugin worldGuard = (WorldGuardPlugin)Bukkit.getPluginManager().getPlugin("WorldGuard");
             World world = Bukkit.getWorld("world");
-            if (world != null && worldGuard.getRegionManager(world).hasRegion("hardcoded-regionname")) {
-                registerDefault(PVPUtility.class, new UHCMagicWall("world", "hardcoded-regionname"));
+            String region = getConfig().getString("arena.region");
+            if (world != null && worldGuard.getRegionManager(world).hasRegion(region)) {
+                registerDefault(PVPUtility.class, new UHCMagicWall("world", region));
             }
         }
     }
