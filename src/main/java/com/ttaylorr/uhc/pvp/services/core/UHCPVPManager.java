@@ -3,6 +3,7 @@ package com.ttaylorr.uhc.pvp.services.core;
 import com.ttaylorr.uhc.pvp.Feature;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.services.*;
+import com.ttaylorr.uhc.pvp.util.Continuation;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -54,9 +55,14 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
     }
 
     @Override
-    protected boolean onExit(Player p) {
+    protected void onExit(Player p, Continuation continuation) {
+        immediateExit(p);
+        continuation.success();
+    }
+
+    @Override
+    protected void onImmediateExit(Player p) {
         for (PVPUtility utility : utilityList)
             utility.unsubscribe(p);
-        return true;
     }
 }

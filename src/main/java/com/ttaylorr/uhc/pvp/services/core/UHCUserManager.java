@@ -3,6 +3,7 @@ package com.ttaylorr.uhc.pvp.services.core;
 import com.ttaylorr.uhc.pvp.CommandListener;
 import com.ttaylorr.uhc.pvp.Feature;
 import com.ttaylorr.uhc.pvp.services.core.usermanager.SwitchGameModeCommandExecutor;
+import com.ttaylorr.uhc.pvp.util.Continuation;
 import com.ttaylorr.uhc.pvp.util.PVPManagerCommand;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.services.GameMode;
@@ -57,7 +58,7 @@ public class UHCUserManager extends UHCServiceBase implements UserManager, Featu
         for(Player player : Bukkit.getOnlinePlayers()) {
             UserData userData = getUserData(player);
             if(userData.isSubscribed())
-                userData.gameMode.exit(player);
+                userData.gameMode.exit(player, Continuation.empty());
         }
     }
 
@@ -68,7 +69,7 @@ public class UHCUserManager extends UHCServiceBase implements UserManager, Featu
 
     public void unsubscribe(Player player) {
         UserData userData = getUserData(player);
-        userData.gameMode.exit(player);
+        userData.gameMode.exit(player, Continuation.empty());
     }
 
     public UserData getUserData(Player player) {

@@ -1,13 +1,28 @@
 package com.ttaylorr.uhc.pvp.services.core;
 
+import com.ttaylorr.uhc.pvp.CommandListener;
 import com.ttaylorr.uhc.pvp.Feature;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.services.LobbyManager;
+import com.ttaylorr.uhc.pvp.util.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
-public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Feature {
+public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Feature, CommandListener {
+    private Command[] commands;
+
     public UHCLobbyManager(PVPManagerPlugin plugin) {
         super(plugin);
+        commands = new Command[] {
+            new SetSpawnCommand(),
+        };
     }
 
     @Override
@@ -22,12 +37,53 @@ public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Fe
 
     @Override
     protected void onEnter(Player p) {
-
+        p.teleport(getSpawn());
+        p.setVelocity(new Vector());
     }
 
     @Override
-    protected boolean onExit(Player p) {
-        return false;
+    protected void onExit(Player p, Continuation continuation) {
+        continuation.success();
     }
 
+    @Override
+    protected void onImmediateExit(Player p) {
+
+    }
+
+    private Location getSpawn() {
+        return Config.getLocation(getConfig(), "spawn");
+    }
+
+    private void setSpawn(Location location) {
+        Config.setLocation(getConfig(), location, "spawn");
+        getPlugin().saveConfig();
+    }
+
+    private ConfigurationSection getConfig() {
+        FileConfiguration config = getPlugin().getConfig();
+        return Config.getOrCreateSection(config, "lobby");
+    }
+
+    @Override
+    public Command[] getCommands() {
+        return commands;
+    }
+
+    private class SetSpawnCommand extends PVPManagerCommand implements CommandExecutor {
+        public SetSpawnCommand() {
+            super(null, "lobby:setspawn", "lobby.setspawn");
+            setExecutor(this);
+        }
+
+        @Override
+        public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+            if(!Checker.isPlayer(commandSender))
+                return true;
+
+            Player player = (Player)commandSender;
+            setSpawn(player.getLocation());
+            return true;
+        }
+    }
 }
