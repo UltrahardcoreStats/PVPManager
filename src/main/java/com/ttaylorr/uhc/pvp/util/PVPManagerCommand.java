@@ -47,11 +47,4 @@ public class PVPManagerCommand extends Command {
     public boolean execute(CommandSender commandSender, String s, String[] strings) {
         return executor.onCommand(commandSender, this, s, strings);
     }
-
-    @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
-        List<String> strings = super.tabComplete(sender, alias, args);
-        Debug.info("PVPManagerCommand#tabComplete: " + StringUtils.join(strings, " "));
-        return strings;
-    }
 }
