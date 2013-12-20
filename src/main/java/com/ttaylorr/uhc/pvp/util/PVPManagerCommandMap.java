@@ -27,12 +27,11 @@ public class PVPManagerCommandMap extends SimpleCommandMap {
         String rawCommand = split[0];
         String[] args = split.length == 1 ? ArrayUtils.EMPTY_STRING_ARRAY : split[1].split(" ");
         Command command = getCommand(rawCommand);
-        return command.execute(sender, rawCommand, args);
+        return command != null && command.execute(sender, rawCommand, args);
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String cmdLine) {
-        new Exception().printStackTrace();
         int spaceIndex = cmdLine.indexOf(' ');
         if(spaceIndex == -1) {
             List<String> results = new ArrayList<>();
