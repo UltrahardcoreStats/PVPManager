@@ -1,3 +1,6 @@
 arena:
   region: arena
-  spawnpoints: [] # Serialized locations
+  spawns: [] # Serialized locations
+lobby:
+  region: lobby
+  spawn: !!null # Serlialized location
