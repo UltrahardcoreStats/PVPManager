@@ -66,7 +66,7 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
         if(combatTagger.isTagged(p))
             continuation.failure();
         immediateExit(p);
-        new ContinuationCounter(continuation, p, 5, "%d seconds left...", "Exiting PVP!");
+        continuation = new ContinuationCounter(continuation, p, 5, "%d seconds left...", "Exiting PVP!");
         continuation.success();
     }
 
