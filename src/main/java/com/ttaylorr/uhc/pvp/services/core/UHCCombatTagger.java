@@ -1,21 +1,31 @@
 package com.ttaylorr.uhc.pvp.services.core;
 
 import com.ttaylorr.uhc.pvp.Feature;
+import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.services.CombatTagger;
+import com.ttaylorr.uhc.pvp.services.core.combattagger.CommandMatcher;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
-public class UHCCombatTagger implements CombatTagger, Feature {
+public class UHCCombatTagger implements CombatTagger, Feature, Listener {
+    ConfigurationSection config;
+    CommandMatcher commandMatcher;
     @Override
     public boolean onEnable() {
         //To change body of implemented methods use File | Settings | File Templates.
-        return false;
+        config = PVPManagerPlugin.get().getConfig().getConfigurationSection("combattag");
+        commandMatcher = CommandMatcher.construct(config);
+
+        return true;
     }
 
     public void onDisable() {
         // TODO Auto-generated method stub
     }
 
-    public void tag(Player player) {
+    public void tag(Player defender, Player attacker) {
         // TODO Auto-generated method stub
     }
 
