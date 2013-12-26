@@ -26,7 +26,7 @@ public class UHCUserManager extends UHCServiceBase implements UserManager, Featu
 
     private final Command[] commands;
 
-    private Listeners listener;
+    private Listeners listeners;
 
     public UHCUserManager(PVPManagerPlugin plugin) {
         super(plugin);
@@ -47,8 +47,8 @@ public class UHCUserManager extends UHCServiceBase implements UserManager, Featu
         joinCommand.setExecutor(new SwitchGameModeCommandExecutor(this, "You are already in PVP", pvpManager));
         quitCommand.setExecutor(new SwitchGameModeCommandExecutor(this, "You are already not in PVP", lobbyManager));
 
-        listener = new Listeners(this);
-        Bukkit.getPluginManager().registerEvents(listener, getPlugin());
+        listeners = new Listeners(this);
+        Bukkit.getPluginManager().registerEvents(listeners, getPlugin());
         for(Player player : Bukkit.getOnlinePlayers())
             subscribe(player);
         return true;
