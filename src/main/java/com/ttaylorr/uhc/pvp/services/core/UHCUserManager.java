@@ -3,17 +3,17 @@ package com.ttaylorr.uhc.pvp.services.core;
 import com.ttaylorr.uhc.pvp.CommandListener;
 import com.ttaylorr.uhc.pvp.Feature;
 import com.ttaylorr.uhc.pvp.services.core.usermanager.SwitchGameModeCommandExecutor;
-import com.ttaylorr.uhc.pvp.util.Continuation;
-import com.ttaylorr.uhc.pvp.util.PVPManagerCommand;
+import com.ttaylorr.uhc.pvp.util.*;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.services.GameMode;
 import com.ttaylorr.uhc.pvp.services.LobbyManager;
 import com.ttaylorr.uhc.pvp.services.PVPManager;
 import com.ttaylorr.uhc.pvp.services.UserManager;
 import com.ttaylorr.uhc.pvp.services.core.usermanager.Listeners;
-import com.ttaylorr.uhc.pvp.util.PlayerDataManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 
@@ -36,6 +36,21 @@ public class UHCUserManager extends UHCServiceBase implements UserManager, Featu
         commands = new Command[]{
             joinCommand,
             quitCommand,
+            new PVPManagerCommand(new CommandExecutor() {
+                @Override
+                public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+                    if(!Checker.isPlayer(commandSender))
+                        return true;
+                    final Player player = (Player) commandSender;
+                    final UserData userData = getUserData(player);
+                    if(!userData.isSubscribed()) {
+                        Message.warn(player, "You are not in a gamemode. Please relog");
+                    } else {
+                        Message.message(player, "You are in "  + (userData.gameMode == pvpManager ? "PVP" : "the lobby"));
+                    }
+                    return true;
+                }
+            }, ""),
         };
     }
 
