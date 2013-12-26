@@ -29,7 +29,7 @@ public class SwitchGameModeCommandExecutor implements CommandExecutor {
             return true;
         final Player player = (Player) commandSender;
         final UHCUserManager.UserData userData = userManager.getUserData(player);
-        if(userData.gameMode.equals(to)) {
+        if(userData.gameMode == to) {
             warn(player, alreadyInMessage);
             return true;
         }
