@@ -31,7 +31,7 @@ public class ContinuationCounter extends Continuation implements Runnable {
 
     @Override
     public void run() {
-        if(seconds-- == 0) {
+        if(--seconds == 0) {
             task.cancel();
             getNext().success();
             if(successMessage != null) {
