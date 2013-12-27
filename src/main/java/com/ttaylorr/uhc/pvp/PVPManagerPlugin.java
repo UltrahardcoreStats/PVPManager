@@ -14,7 +14,6 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
-import sun.security.krb5.Config;
 
 import java.util.ArrayList;
 import java.util.List;
