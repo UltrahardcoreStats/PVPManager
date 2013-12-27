@@ -82,7 +82,7 @@ public class PVPManagerPlugin extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        return args.length != 0 && subCommands.dispatch(sender, StringUtils.join(args));
+        return subCommands.dispatch(sender, args.length == 0 ? "" : StringUtils.join(args));
     }
 
     @Override
