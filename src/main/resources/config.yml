@@ -1,6 +1,23 @@
+# combattag.command-whitelist/combattag.command-blacklist
+#   White/blacklist of commands which can(not) be executed while tagged
+# combattag.display.mode
+#   Output verbosity
+#   Possible values:
+#     none - Shows no tag messages
+#     single - Shows a message if you get tagged
+#     per-person - Shows a message if you get tagged by someone who hasn't tagged you yet
+#     retag - Shows a message per tag. Very spammy!
 arena:
   region: arena
   spawns: [] # Serialized locations
 lobby:
   region: lobby
   spawn: !!null # Serlialized location
+combattag:
+  command-whitelist:
+    - /^pvp /
+  tagback: true
+  display:
+    mode: single
+    tag: You got tagged by {p}
+    untag: You are no longer tagged
