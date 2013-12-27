@@ -2,8 +2,9 @@ package com.ttaylorr.uhc.pvp.events;
 
 import com.ttaylorr.uhc.pvp.services.CombatTagger;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 
-public abstract class CombatTagEvent {
+public abstract class CombatTagEvent extends Event {
     private final Player player;
     private final CombatTagger service;
 
