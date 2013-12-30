@@ -72,6 +72,7 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
     protected void onEnter(Player p) {
         for (PVPUtility utility : utilityList)
             utility.subscribe(p);
+        respawn(p);
     }
 
     @Override
@@ -119,6 +120,7 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
                 return true;
             Player player = (Player)commandSender;
             spawnManager.add(player.getLocation());
+            spawnManager.save();
             getPlugin().saveConfig();
             return false;
         }

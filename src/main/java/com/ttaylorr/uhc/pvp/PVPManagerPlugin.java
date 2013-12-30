@@ -1,11 +1,14 @@
 package com.ttaylorr.uhc.pvp;
 
+import com.google.common.util.concurrent.Service;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.ttaylorr.uhc.pvp.services.*;
 import com.ttaylorr.uhc.pvp.services.core.*;
 import com.ttaylorr.uhc.pvp.services.core.UHCUserManager;
 import com.ttaylorr.uhc.pvp.services.interfaces.PVPUtility;
+import com.ttaylorr.uhc.pvp.services.interfaces.SpawnChooser;
 import com.ttaylorr.uhc.pvp.util.*;
+import com.ttaylorr.uhc.pvp.util.serialization.SerializableLocation;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -23,6 +26,7 @@ public class PVPManagerPlugin extends JavaPlugin {
 
     private static PVPManagerPlugin instance;
     List<Feature> features;
+    List<Persistent> persistencies;
     CommandMap subCommands;
     PlayerDataManager dataManager;
     Listeners listeners;
@@ -39,6 +43,7 @@ public class PVPManagerPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        SerializableLocation.init();
         instance = this;
         initializeConfig();
         Debug.init(this);
@@ -60,11 +65,12 @@ public class PVPManagerPlugin extends JavaPlugin {
 
     private void registerProviders() {
         features = new ArrayList<>();
+        persistencies = new ArrayList<>();
         subCommands = new PVPManagerCommandMap();
         registerDefault(CombatTagger.class, new UHCCombatTagger());
         registerDefault(LobbyManager.class, new UHCLobbyManager(this));
         registerDefault(PVPRestrictionManager.class, new UHCPVPRestrictionManager());
-        registerDefault(SpawnManager.class, new UHCSpawnManager());
+        registerDefault(SpawnManager.class, new UHCSpawnManager(SpawnChooser.random()));
         // Depends on SpawnManager, PVPRestrictionManager and CombatTagger
         registerDefault(PVPManager.class, new UHCPVPManager(this));
         // Depends on PVPManagerPlugin, LobbyManager
@@ -86,6 +92,16 @@ public class PVPManagerPlugin extends JavaPlugin {
     }
 
     @Override
+    public void saveConfig() {
+//        if(persistencies != null) {
+//            for(Persistent persistent : persistencies) {
+//                persistent.save();
+//            }
+//        }
+        super.saveConfig();
+    }
+
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         return subCommands.dispatch(sender, args.length == 0 ? "" : StringUtils.join(args, ' '));
     }
@@ -104,6 +120,7 @@ public class PVPManagerPlugin extends JavaPlugin {
     <T> void registerDefault(Class<T> type, T service) {
         Bukkit.getServicesManager().register(type, service, this, ServicePriority.Lowest);
         if (service instanceof Feature) features.add((Feature) service);
+        if (service instanceof Persistent) persistencies.add((Persistent) service);
         if(service instanceof CommandListener) {
             CommandListener commandListener = (CommandListener)service;
             for(Command command : commandListener.getCommands()) {
