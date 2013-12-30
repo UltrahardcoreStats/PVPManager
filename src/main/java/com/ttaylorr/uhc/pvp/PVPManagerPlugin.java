@@ -4,6 +4,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.ttaylorr.uhc.pvp.services.*;
 import com.ttaylorr.uhc.pvp.services.core.*;
 import com.ttaylorr.uhc.pvp.services.core.UHCUserManager;
+import com.ttaylorr.uhc.pvp.services.interfaces.PVPUtility;
 import com.ttaylorr.uhc.pvp.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;

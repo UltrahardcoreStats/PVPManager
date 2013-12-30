@@ -5,7 +5,7 @@ import com.ttaylorr.uhc.pvp.Feature;
 import com.ttaylorr.uhc.pvp.services.core.usermanager.SwitchGameModeCommandExecutor;
 import com.ttaylorr.uhc.pvp.util.*;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
-import com.ttaylorr.uhc.pvp.services.GameMode;
+import com.ttaylorr.uhc.pvp.services.interfaces.GameMode;
 import com.ttaylorr.uhc.pvp.services.LobbyManager;
 import com.ttaylorr.uhc.pvp.services.PVPManager;
 import com.ttaylorr.uhc.pvp.services.UserManager;

@@ -1,5 +1,7 @@
 package com.ttaylorr.uhc.pvp.services;
 
-public interface LobbyManager extends GameMode  {
+import com.ttaylorr.uhc.pvp.services.interfaces.GameMode;
+
+public interface LobbyManager extends GameMode {
 
 }

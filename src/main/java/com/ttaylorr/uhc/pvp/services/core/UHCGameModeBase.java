@@ -1,7 +1,7 @@
 package com.ttaylorr.uhc.pvp.services.core;
 
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
-import com.ttaylorr.uhc.pvp.services.GameMode;
+import com.ttaylorr.uhc.pvp.services.interfaces.GameMode;
 import com.ttaylorr.uhc.pvp.util.Continuation;
 import org.bukkit.entity.Player;
 

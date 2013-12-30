@@ -1,4 +1,4 @@
-package com.ttaylorr.uhc.pvp.services;
+package com.ttaylorr.uhc.pvp.services.interfaces;
 
 import com.ttaylorr.uhc.pvp.util.Continuation;
 import org.bukkit.entity.Player;

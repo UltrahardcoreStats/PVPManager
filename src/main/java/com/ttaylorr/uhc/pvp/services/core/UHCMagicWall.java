@@ -2,7 +2,7 @@ package com.ttaylorr.uhc.pvp.services.core;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.ttaylorr.uhc.pvp.services.PVPUtility;
+import com.ttaylorr.uhc.pvp.services.interfaces.PVPUtility;
 import com.ttaylorr.uhc.pvp.util.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
