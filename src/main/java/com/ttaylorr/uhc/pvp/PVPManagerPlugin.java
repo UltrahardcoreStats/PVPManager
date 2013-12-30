@@ -1,11 +1,13 @@
 package com.ttaylorr.uhc.pvp;
 
+import com.google.common.base.Preconditions;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.ttaylorr.uhc.pvp.services.*;
 import com.ttaylorr.uhc.pvp.services.core.*;
 import com.ttaylorr.uhc.pvp.services.core.UHCUserManager;
 import com.ttaylorr.uhc.pvp.services.interfaces.PVPUtility;
 import com.ttaylorr.uhc.pvp.util.*;
+import com.ttaylorr.uhc.pvp.util.commands.KitCommand;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -13,10 +15,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,9 +32,14 @@ public class PVPManagerPlugin extends JavaPlugin {
     CommandMap subCommands;
     PlayerDataManager dataManager;
     Listeners listeners;
+    private YamlConfiguration kitsConfig;
 
     public static PVPManagerPlugin get() {
         return instance;
+    }
+
+    public YamlConfiguration getKitsConfig() {
+        return Preconditions.checkNotNull(this.kitsConfig, "Kit configuration is null!");
     }
 
     @Override
@@ -52,6 +62,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(listeners, this);
 
         subCommands.register("pvpmanager", new ReloadCommand());
+        this.getCommand("kits").setExecutor(new KitCommand(this));
     }
 
     private void enableFeatures() {
@@ -85,6 +96,14 @@ public class PVPManagerPlugin extends JavaPlugin {
         getConfig().options().copyDefaults(true);
         saveConfig();
         this.saveResource(new File("kits.yml").getPath(), false);
+
+        try {
+            kitsConfig.load(new File(this.getDataFolder(), "kits.yml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
