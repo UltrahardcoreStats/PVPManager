@@ -1,15 +1,14 @@
 package com.ttaylorr.uhc.pvp.util;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Kit implements InventoryHolder {
@@ -18,7 +17,6 @@ public class Kit implements InventoryHolder {
     private final PlayerInventory inventory;
 
     public Kit(ConfigurationSection kitConfig) {
-        // Deserialize? Custom format? Former is favorable, edit ingame, store 1:1 in yaml. Possibly a separate file, but that is for later
         inventory = parseConfig(kitConfig);
         itemStacks = getItemStacks(inventory);
     }
@@ -51,7 +49,7 @@ public class Kit implements InventoryHolder {
     }
 
     private static PlayerInventory parseConfig(ConfigurationSection kitConfig) {
-        throw new NotImplementedException();
+        return (PlayerInventory) ConfigurationSerialization.deserializeObject(kitConfig.getValues(true));
     }
 
     private static ItemStack[] getItemStacks(Inventory inventory) {

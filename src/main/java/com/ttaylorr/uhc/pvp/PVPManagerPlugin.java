@@ -16,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +84,7 @@ public class PVPManagerPlugin extends JavaPlugin {
     private void initializeConfig() {
         getConfig().options().copyDefaults(true);
         saveConfig();
+        this.saveResource(new File("kits.yml").getPath(), false);
     }
 
     @Override
