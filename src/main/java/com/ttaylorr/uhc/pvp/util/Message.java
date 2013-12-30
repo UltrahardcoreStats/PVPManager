@@ -21,6 +21,6 @@ public class Message {
         message(sender, ChatColor.DARK_GREEN, message);
     }
     private static String colorize(ChatColor color, String message) {
-        return color + message.replace(ChatColor.RESET.getChar(), color.getChar());
+        return color + message.replace(ChatColor.RESET.toString(), color.toString());
     }
 }
