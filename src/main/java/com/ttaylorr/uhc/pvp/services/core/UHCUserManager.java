@@ -9,7 +9,6 @@ import com.ttaylorr.uhc.pvp.services.interfaces.GameMode;
 import com.ttaylorr.uhc.pvp.services.LobbyManager;
 import com.ttaylorr.uhc.pvp.services.PVPManager;
 import com.ttaylorr.uhc.pvp.services.UserManager;
-import com.ttaylorr.uhc.pvp.services.core.usermanager.Listeners;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,8 +24,6 @@ public class UHCUserManager extends UHCServiceBase implements UserManager, Featu
     private LobbyManager lobbyManager;
 
     private final Command[] commands;
-
-    private Listeners listeners;
 
     public UHCUserManager(PVPManagerPlugin plugin) {
         super(plugin);
@@ -62,8 +59,6 @@ public class UHCUserManager extends UHCServiceBase implements UserManager, Featu
         joinCommand.setExecutor(new SwitchGameModeCommandExecutor(this, "You are already in PVP", pvpManager));
         quitCommand.setExecutor(new SwitchGameModeCommandExecutor(this, "You are already not in PVP", lobbyManager));
 
-        listeners = new Listeners(this);
-        Bukkit.getPluginManager().registerEvents(listeners, getPlugin());
         for(Player player : Bukkit.getOnlinePlayers())
             subscribe(player);
         return true;

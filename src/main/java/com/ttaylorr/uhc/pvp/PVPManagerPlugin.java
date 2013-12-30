@@ -25,6 +25,7 @@ public class PVPManagerPlugin extends JavaPlugin {
     List<Feature> features;
     CommandMap subCommands;
     PlayerDataManager dataManager;
+    Listeners listeners;
 
     public static PVPManagerPlugin get() {
         return instance;
@@ -45,6 +46,9 @@ public class PVPManagerPlugin extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(dataManager, this);
         registerProviders();
         enableFeatures();
+        UserManager userManager = (UserManager) Bukkit.getServicesManager().getRegistration(UserManager.class).getProvider();
+        listeners = new Listeners(userManager);
+        Bukkit.getPluginManager().registerEvents(listeners, this);
 
         subCommands.register("pvpmanager", new ReloadCommand());
     }
