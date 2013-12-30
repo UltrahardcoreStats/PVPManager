@@ -1,32 +1,44 @@
 package com.ttaylorr.uhc.pvp.services.core;
 
+import com.ttaylorr.uhc.pvp.CommandListener;
 import com.ttaylorr.uhc.pvp.Feature;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.events.PlayerTaggedEvent;
 import com.ttaylorr.uhc.pvp.services.*;
 import com.ttaylorr.uhc.pvp.services.interfaces.PVPUtility;
-import com.ttaylorr.uhc.pvp.util.Continuation;
-import com.ttaylorr.uhc.pvp.util.ContinuationCounter;
+import com.ttaylorr.uhc.pvp.util.*;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Feature, Listener {
+public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Feature, Listener, CommandListener {
     SpawnManager spawnManager;
     PVPRestrictionManager pvpRestrictionManager;
     CombatTagger combatTagger;
     List<PVPUtility> utilityList;
     Map<Player, Continuation> exitters;
+    Command[] commands;
 
 
     public UHCPVPManager(PVPManagerPlugin plugin) {
         super(plugin);
+
+        commands = new Command[] {
+                new AddSpawnCommand(),
+                new RemoveSpawnCommand(),
+                new RespawnSpawnCommand(),
+        };
     }
 
     @Override
@@ -85,5 +97,84 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
         if(exitters.containsKey(pte.getPlayer())) {
             exitters.remove(pte.getPlayer()).failure();
         }
+    }
+
+    private void respawn(Player player) {
+        spawnManager.respawn(player);
+    }
+
+    @Override
+    public Command[] getCommands() {
+        return commands;
+    }
+    private class AddSpawnCommand extends PVPManagerCommand implements CommandExecutor {
+
+        public AddSpawnCommand() {
+            super(null, "pvp:addspawn");
+            setExecutor(this);
+        }
+        @Override
+        public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+            if(!Checker.isPlayer(commandSender))
+                return true;
+            Player player = (Player)commandSender;
+            spawnManager.add(player.getLocation());
+            getPlugin().saveConfig();
+            return false;
+        }
+
+    }
+    private class RemoveSpawnCommand extends PVPManagerCommand implements CommandExecutor {
+
+        public RemoveSpawnCommand() {
+            super(null, "pvp:delspawn");
+            setExecutor(this);
+        }
+        @Override
+        public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+            if(!Checker.isPlayer(commandSender))
+                return true;
+            Player player = (Player)commandSender;
+            float range = 0.1f;
+            if(strings.length > 1) {
+                return false;
+            }
+            if(strings.length == 1) {
+                range = Float.parseFloat(strings[0]);
+            }
+
+            Iterator<Location> locationIterator = spawnManager.iterator();
+            int count = 0;
+            while (locationIterator.hasNext()) {
+                if(locationIterator.next().distanceSquared(player.getLocation()) < range * range) {
+                    locationIterator.remove();
+                    count++;
+                }
+            }
+            if(count > 0) {
+                Message.success(player, "Spawns removed: "  + count);
+            } else {
+                Message.warn(player, "Spawns removed: " + count);
+            }
+            getPlugin().saveConfig();
+            return true;
+        }
+
+    }
+    private class RespawnSpawnCommand extends PVPManagerCommand implements CommandExecutor {
+
+        public RespawnSpawnCommand() {
+            super(null, "pvp:respawn");
+            setExecutor(this);
+        }
+        @Override
+        public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+            if(!Checker.isPlayer(commandSender))
+                return true;
+            Player player = (Player)commandSender;
+            respawn(player);
+            return true;
+        }
+
     }
 }
