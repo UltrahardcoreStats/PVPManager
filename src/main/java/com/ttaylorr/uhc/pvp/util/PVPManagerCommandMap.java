@@ -31,12 +31,13 @@ public class PVPManagerCommandMap extends SimpleCommandMap {
         if (command != null) {
             command.execute(sender, rawCommand, args);
         } else {
-            suggestCommand(sender, rawCommand, command);
+            suggestCommand(sender, rawCommand);
         }
         return true;
     }
 
-    private void suggestCommand(CommandSender sender, String rawCommand, Command command) {
+    private void suggestCommand(CommandSender sender, String rawCommand) {
+        Command command = null;
         int minimal = Integer.MAX_VALUE;
         for(Command possibleCommand : getCommands()) {
             int distance = DamerauLevenshtein.Compute(rawCommand, possibleCommand.getName(), 5);
@@ -46,7 +47,9 @@ public class PVPManagerCommandMap extends SimpleCommandMap {
             minimal = distance;
         }
 
-        Message.warn(sender, "Command not found. Did you mean " + ChatColor.WHITE + ChatColor.UNDERLINE + command.getName() + ChatColor.RESET + "?");
+        if(command != null) {
+            Message.warn(sender, "Command not found. Did you mean " + ChatColor.WHITE + ChatColor.UNDERLINE + command.getName() + ChatColor.RESET + "?");
+        }
     }
 
     @Override
