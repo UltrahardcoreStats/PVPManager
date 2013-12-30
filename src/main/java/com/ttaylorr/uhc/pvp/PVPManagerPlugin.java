@@ -46,7 +46,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(dataManager, this);
         registerProviders();
         enableFeatures();
-        UserManager userManager = (UserManager) Bukkit.getServicesManager().getRegistration(UserManager.class).getProvider();
+        UserManager userManager = Bukkit.getServicesManager().getRegistration(UserManager.class).getProvider();
         listeners = new Listeners(userManager);
         Bukkit.getPluginManager().registerEvents(listeners, this);
 

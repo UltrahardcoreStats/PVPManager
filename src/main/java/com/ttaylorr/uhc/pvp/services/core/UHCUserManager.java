@@ -53,8 +53,8 @@ public class UHCUserManager extends UHCServiceBase implements UserManager, Featu
 
     @Override
     public boolean onEnable() {
-        pvpManager = (PVPManager) Bukkit.getServicesManager().getRegistration(PVPManager.class).getProvider();
-        lobbyManager = (LobbyManager) Bukkit.getServicesManager().getRegistration(LobbyManager.class).getProvider();
+        pvpManager = Bukkit.getServicesManager().getRegistration(PVPManager.class).getProvider();
+        lobbyManager = Bukkit.getServicesManager().getRegistration(LobbyManager.class).getProvider();
 
         joinCommand.setExecutor(new SwitchGameModeCommandExecutor(this, "You are already in PVP", pvpManager));
         quitCommand.setExecutor(new SwitchGameModeCommandExecutor(this, "You are already not in PVP", lobbyManager));
