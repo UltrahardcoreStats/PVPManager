@@ -5,7 +5,15 @@ main: ${plugin.mainClass}
 commands:
   pvp:
     permission: pvpmanager.command
+  kit:
+    permission: pvpmanager.kits.*
 permissions:
   pvpmanager.join.teleport.bypass:
     description: Allows you to bypass automatic teleporting when joining the lobby.
     default: false
+  pvpmanager.kits.save:
+    description: Allows you to save a kit.
+    default: op
+  pvpmanager.kits.get:
+    description: Allows you to get a kit.
+    default: op
