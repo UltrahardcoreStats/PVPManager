@@ -2,6 +2,7 @@ package com.ttaylorr.uhc.pvp.util;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
@@ -27,7 +28,25 @@ public class PVPManagerCommandMap extends SimpleCommandMap {
         String rawCommand = split[0];
         String[] args = split.length == 1 ? ArrayUtils.EMPTY_STRING_ARRAY : split[1].split(" ");
         Command command = getCommand(rawCommand);
-        return command != null && command.execute(sender, rawCommand, args);
+        if (command != null) {
+            command.execute(sender, rawCommand, args);
+        } else {
+            suggestCommand(sender, rawCommand, command);
+        }
+        return true;
+    }
+
+    private void suggestCommand(CommandSender sender, String rawCommand, Command command) {
+        int minimal = Integer.MAX_VALUE;
+        for(Command possibleCommand : getCommands()) {
+            int distance = DamerauLevenshtein.Compute(rawCommand, possibleCommand.getName(), 5);
+            if(distance >= minimal)
+                continue;
+            command = possibleCommand;
+            minimal = distance;
+        }
+
+        Message.warn(sender, "Command not found. Did you mean " + ChatColor.WHITE + ChatColor.UNDERLINE + command.getName() + ChatColor.RESET + "?");
     }
 
     @Override
