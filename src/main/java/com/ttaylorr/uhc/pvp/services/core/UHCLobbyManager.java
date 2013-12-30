@@ -76,7 +76,7 @@ public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Fe
 
     private class SetSpawnCommand extends PVPManagerCommand implements CommandExecutor {
         public SetSpawnCommand() {
-            super(null, "lobby:setspawn", "lobby.setspawn");
+            super(null, "lobby:setspawn");
             setExecutor(this);
         }
 
