@@ -40,7 +40,9 @@ public class PVPManagerCommandMap extends SimpleCommandMap {
         Command command = null;
         int minimal = Integer.MAX_VALUE;
         for(Command possibleCommand : getCommands()) {
-            int distance = DamerauLevenshtein.Compute(rawCommand, possibleCommand.getName(), 5);
+            if(!possibleCommand.testPermissionSilent(sender))
+                continue;
+            int distance = DamerauLevenshtein.Compute(rawCommand, possibleCommand.getName(), 10);
             if(distance >= minimal)
                 continue;
             command = possibleCommand;

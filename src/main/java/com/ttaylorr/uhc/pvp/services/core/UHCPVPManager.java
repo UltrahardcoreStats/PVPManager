@@ -9,12 +9,16 @@ import com.ttaylorr.uhc.pvp.services.interfaces.PVPUtility;
 import com.ttaylorr.uhc.pvp.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.ArrayList;
@@ -92,6 +96,8 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
 
     @EventHandler
     private void onPlayerTagged(PlayerTaggedEvent pte) {
+        if(!isInGameMode(pte.getPlayer()))
+            return;
         if(pte.getService() != combatTagger)
             return;
 
@@ -100,7 +106,34 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
         }
     }
 
+    @EventHandler
+    private void onPlayerDeath(PlayerDeathEvent event) {
+        if(!isInGameMode(event.getEntity()))
+            return;
+        List<ItemStack> drops = event.getDrops();
+        Iterator<ItemStack> dropIterator = drops.iterator();
+        while (dropIterator.hasNext()) {
+            if(dropIterator.next().getType() != Material.POTION || dropIterator.next().getType() != Material.GOLD_NUGGET)
+                dropIterator.remove();
+        }
+        KitLoader.clear(event.getEntity().getInventory());
+    }
+
+    @EventHandler
+    private void onPlayerRespawn(PlayerRespawnEvent event) {
+        if(!isInGameMode(event.getPlayer()))
+            return;
+        event.setRespawnLocation(spawnManager.getSpawn(event.getPlayer()));
+    }
+
     private void respawn(Player player) {
+        Kit kit = getPlugin().getKits().getKit("pvp_default");
+        if(null != kit)
+            kit.apply(player, true);
+        else {
+            KitLoader.clear(player.getInventory());
+            getPlugin().getLogger().warning("Kit not found! pvp_default");
+        }
         spawnManager.respawn(player);
     }
 
@@ -166,7 +199,7 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
     private class RespawnSpawnCommand extends PVPManagerCommand implements CommandExecutor {
 
         public RespawnSpawnCommand() {
-            super(null, "pvp:respawn");
+            super(null, "pvp:respawn", "respawn");
             setExecutor(this);
         }
         @Override

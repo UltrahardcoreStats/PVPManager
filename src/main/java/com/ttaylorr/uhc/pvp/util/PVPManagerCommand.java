@@ -45,6 +45,8 @@ public class PVPManagerCommand extends Command {
 
     @Override
     public boolean execute(CommandSender commandSender, String s, String[] strings) {
+        if(!testPermission(commandSender))
+            return false;
         return executor.onCommand(commandSender, this, s, strings);
     }
 }

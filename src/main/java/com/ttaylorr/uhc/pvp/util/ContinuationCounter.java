@@ -19,7 +19,7 @@ public class ContinuationCounter extends Continuation implements Runnable {
         this.tickMessage = tickMessage;
         this.successMessage = successMessage;
         if(tickMessage != null) {
-            receiver.sendMessage(String.format(tickMessage, seconds));
+            Message.message(receiver, String.format(tickMessage, seconds));
         }
     }
 
@@ -35,10 +35,10 @@ public class ContinuationCounter extends Continuation implements Runnable {
             task.cancel();
             getNext().success();
             if(successMessage != null) {
-                receiver.sendMessage(successMessage);
+                Message.message(receiver, successMessage);
             }
         } else if (tickMessage != null) {
-            receiver.sendMessage(String.format(tickMessage, seconds));
+            Message.message(receiver, String.format(tickMessage, seconds));
         }
     }
 }

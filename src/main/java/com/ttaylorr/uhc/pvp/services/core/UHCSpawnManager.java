@@ -36,9 +36,14 @@ public class UHCSpawnManager extends ArrayList<Location> implements SpawnManager
     }
 
     public Location respawn(Player p) {
-        Location spawn = chooser.choose(p, this);
+        Location spawn = getSpawn(p);
         p.teleport(spawn);
         return spawn;
+    }
+
+    @Override
+    public Location getSpawn(Player p) {
+        return chooser.choose(p, this);
     }
 
     @Override

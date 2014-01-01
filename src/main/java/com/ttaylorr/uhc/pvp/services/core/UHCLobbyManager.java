@@ -13,9 +13,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.util.Vector;
 
-public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Feature, CommandListener {
+public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Feature, Listener, CommandListener {
     private Command[] commands;
 
     public UHCLobbyManager(PVPManagerPlugin plugin) {
@@ -27,7 +30,7 @@ public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Fe
 
     @Override
     public boolean onEnable() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        Bukkit.getPluginManager().registerEvents(this, getPlugin());
         return false;
     }
 
@@ -43,6 +46,13 @@ public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Fe
         }
         p.teleport(getSpawn());
         p.setVelocity(new Vector());
+        Kit kit = getPlugin().getKits().getKit("lobby");
+        if(null != kit)
+            kit.apply(p, true);
+        else {
+            KitLoader.clear(p.getInventory());
+            getPlugin().getLogger().warning("Kit not found! pvp_default");
+        }
     }
 
     @Override
@@ -53,6 +63,13 @@ public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Fe
     @Override
     protected void onImmediateExit(Player p) {
 
+    }
+
+    @EventHandler
+    private void onPlayerRespawn(PlayerRespawnEvent event) {
+        if(!isInGameMode(event.getPlayer()))
+            return;
+        event.setRespawnLocation(getSpawn());
     }
 
     private Location getSpawn() {

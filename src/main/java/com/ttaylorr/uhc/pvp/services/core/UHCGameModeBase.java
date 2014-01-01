@@ -53,4 +53,8 @@ public abstract class UHCGameModeBase extends UHCServiceBase implements GameMode
         onImmediateExit(p);
         players.remove(p);
     }
+
+    public boolean isInGameMode(Player p) {
+        return players.contains(p);
+    }
 }

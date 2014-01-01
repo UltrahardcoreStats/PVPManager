@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface SpawnManager extends List<Location>, Persistent {
     public Location respawn(Player p);
+    public Location getSpawn(Player p);
     public void setSpawnChooser(SpawnChooser chooser);
     public SpawnChooser getSpawnChooser();
 }

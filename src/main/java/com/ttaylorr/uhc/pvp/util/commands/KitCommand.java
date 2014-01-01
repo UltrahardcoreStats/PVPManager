@@ -3,15 +3,18 @@ package com.ttaylorr.uhc.pvp.util.commands;
 import com.google.common.base.Preconditions;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.util.Message;
+import com.ttaylorr.uhc.pvp.util.PVPManagerCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class KitCommand implements CommandExecutor {
+public class KitCommand extends PVPManagerCommand implements CommandExecutor {
     private PVPManagerPlugin plugin;
 
     public KitCommand(PVPManagerPlugin plugin) {
+        super(null, "kit");
+        setExecutor(this);
         Preconditions.checkArgument(plugin.isEnabled(), "Plugin not enabled!");
         this.plugin = Preconditions.checkNotNull(plugin, "Plugin");
     }
