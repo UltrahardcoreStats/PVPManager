@@ -148,6 +148,7 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
             getPlugin().getLogger().warning("Kit not found! pvp_default");
         }
         spawnManager.respawn(player);
+        player.setWalkSpeed(0.2888889014720917f);
     }
 
     @Override
