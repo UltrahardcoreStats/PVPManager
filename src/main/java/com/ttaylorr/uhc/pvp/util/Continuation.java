@@ -9,7 +9,7 @@ public class Continuation {
         this(null);
     }
 
-    protected Continuation(Continuation next) {
+    public Continuation(Continuation next) {
         this.next = next;
     }
     public void success() {

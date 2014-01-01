@@ -1,5 +1,6 @@
 package com.ttaylorr.uhc.pvp.util;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -22,5 +23,24 @@ public class Message {
     }
     private static String colorize(ChatColor color, String message) {
         return color + message.replace(ChatColor.RESET.toString(), color.toString());
+    }
+
+    public static class Broadcast {
+        public static void message(String message) {
+            Bukkit.broadcastMessage(ChatColor.AQUA + "[PVP]" + ChatColor.GRAY + " - " + ChatColor.RESET + message);
+        }
+
+        public static void message(ChatColor color, String message) {
+            Bukkit.broadcastMessage(ChatColor.AQUA + "[PVP]" + ChatColor.GRAY + " - " + ChatColor.RESET + colorize(color, message));
+        }
+        public static void warn(String message) {
+            message(ChatColor.GOLD, message);
+        }
+        public static void failure(String message) {
+            message(ChatColor.RED, message);
+        }
+        public static void success(String message) {
+            message(ChatColor.DARK_GREEN, message);
+        }
     }
 }

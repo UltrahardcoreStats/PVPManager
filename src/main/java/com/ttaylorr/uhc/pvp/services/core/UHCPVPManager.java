@@ -82,14 +82,22 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
         for (PVPUtility utility : utilityList)
             utility.subscribe(p);
         respawn(p);
+        Message.Broadcast.message(p.getDisplayName() + " joined the arena!");
     }
 
     @Override
-    protected void onExit(Player p, Continuation continuation) {
+    protected void onExit(final Player p, Continuation continuation) {
         if(combatTagger.isTagged(p))
             continuation.failure();
         immediateExit(p);
-        continuation = new ContinuationCounter(continuation, p, 5, "%d seconds left...", "Exiting PVP!");
+        continuation = new ContinuationCounter(new Continuation(continuation) {
+            @Override
+            public void success() {
+                immediateExit(p);
+                super.success();
+                Message.Broadcast.message(p.getDisplayName() + " left the arena!");
+            }
+        }, p, 5, "%d seconds left...", "Exiting PVP!");
         continuation.success();
     }
 
