@@ -10,6 +10,7 @@ import com.ttaylorr.uhc.pvp.services.LobbyManager;
 import com.ttaylorr.uhc.pvp.services.PVPManager;
 import com.ttaylorr.uhc.pvp.services.UserManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -43,7 +44,10 @@ public class UHCUserManager extends UHCServiceBase implements UserManager, Featu
                     if(!userData.isSubscribed()) {
                         Message.warn(player, "You are not in a gamemode. Please relog");
                     } else {
-                        Message.message(player, "You are in "  + (userData.gameMode == pvpManager ? "PVP" : "the lobby"));
+                        Message.message(player, "You are in "  + (userData.gameMode == pvpManager
+                                ? "PVP, to leave: " + ChatColor.UNDERLINE + "/pvp quit"
+                                : "the lobby, to join: " + ChatColor.UNDERLINE + "/pvp join"
+                        ));
                     }
                     return true;
                 }
