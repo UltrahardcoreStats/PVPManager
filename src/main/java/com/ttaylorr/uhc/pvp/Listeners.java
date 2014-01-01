@@ -1,6 +1,7 @@
 package com.ttaylorr.uhc.pvp;
 
 import com.ttaylorr.uhc.pvp.services.UserManager;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -16,7 +17,7 @@ public class Listeners implements Listener {
         this.userManager = userManager;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     private void onPlayerJoin(PlayerJoinEvent event) {
         userManager.subscribe(event.getPlayer());
     }
