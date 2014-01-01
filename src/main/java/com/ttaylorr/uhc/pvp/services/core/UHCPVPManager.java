@@ -22,8 +22,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.potion.Potion;
-import org.bukkit.potion.PotionBrewer;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
@@ -156,7 +154,8 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
             getPlugin().getLogger().warning("Kit not found! pvp_default");
         }
         spawnManager.respawn(player);
-        player.setWalkSpeed(0.2888889014720917f);
+        //player.setWalkSpeed(0.2888889014720917f);
+        player.setWalkSpeed(0.2f);
     }
 
     @Override
