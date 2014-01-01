@@ -93,6 +93,7 @@ public class UHCUserManager extends UHCServiceBase implements UserManager, Featu
 
     public static class UserData {
         public GameMode gameMode;
+        public boolean transitioning;
 
         public boolean isSubscribed() {
             return gameMode != null;

@@ -29,21 +29,26 @@ public class SwitchGameModeCommandExecutor implements CommandExecutor {
             return true;
         final Player player = (Player) commandSender;
         final UHCUserManager.UserData userData = userManager.getUserData(player);
+        if(userData.transitioning) {
+            Message.warn(player, "You are already switching game mode!");
+            return true;
+        }
         if(userData.gameMode == to) {
             warn(player, alreadyInMessage);
             return true;
         }
+        userData.transitioning = true;
         userData.gameMode.exit(player, new Continuation() {
             @Override
             public void success() {
+                userData.transitioning = false;
                 to.enter(player);
                 userData.gameMode = to;
-                Message.success(player, "Switched gamemode");
             }
 
             @Override
             public void failure() {
-                Message.failure(player, "Failed to switch gamemode");
+                userData.transitioning = false;
             }
         });
         return false;
