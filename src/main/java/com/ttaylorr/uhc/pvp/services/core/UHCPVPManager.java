@@ -21,6 +21,10 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionBrewer;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -117,6 +121,7 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
             if(dropIterator.next().getType() != Material.POTION || dropIterator.next().getType() != Material.GOLD_NUGGET)
                 dropIterator.remove();
         }
+        drops.add(new Potion(PotionType.INSTANT_HEAL, 2).splash().toItemStack(1));
         KitLoader.clear(event.getEntity().getInventory());
     }
 
@@ -124,6 +129,13 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
     private void onPlayerRespawn(PlayerRespawnEvent event) {
         if(!isInGameMode(event.getPlayer()))
             return;
+        Kit kit = getPlugin().getKits().getKit("pvp_default");
+        if(null != kit)
+            kit.apply(event.getPlayer(), true);
+        else {
+            KitLoader.clear(event.getPlayer().getInventory());
+            getPlugin().getLogger().warning("Kit not found! pvp_default");
+        }
         event.setRespawnLocation(spawnManager.getSpawn(event.getPlayer()));
     }
 

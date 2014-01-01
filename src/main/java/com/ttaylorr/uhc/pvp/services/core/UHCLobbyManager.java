@@ -71,6 +71,13 @@ public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Fe
         if(!isInGameMode(event.getPlayer()))
             return;
         event.setRespawnLocation(getSpawn());
+        Kit kit = getPlugin().getKits().getKit("lobby");
+        if(null != kit)
+            kit.apply(event.getPlayer(), true);
+        else {
+            KitLoader.clear(event.getPlayer().getInventory());
+            getPlugin().getLogger().warning("Kit not found! pvp_default");
+        }
     }
 
     private Location getSpawn() {
