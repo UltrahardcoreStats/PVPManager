@@ -155,7 +155,8 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
         }
         spawnManager.respawn(player);
         //player.setWalkSpeed(0.2888889014720917f);
-        player.setWalkSpeed(0.2f);
+        player.setWalkSpeed(0.24f);
+        //player.setWalkSpeed(0.2f);
     }
 
     @Override
