@@ -52,7 +52,7 @@ public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Fe
             kit.apply(p, true);
         else {
             KitLoader.clear(p.getInventory());
-            getPlugin().getLogger().warning("Kit not found! pvp_default");
+            getPlugin().getLogger().warning("Kit not found! lobby   ");
         }
     }
 
