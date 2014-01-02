@@ -9,7 +9,6 @@ import com.ttaylorr.uhc.pvp.services.interfaces.PVPUtility;
 import com.ttaylorr.uhc.pvp.services.interfaces.SpawnChooser;
 import com.ttaylorr.uhc.pvp.util.*;
 import com.ttaylorr.uhc.pvp.util.serialization.SerializableLocation;
-import com.ttaylorr.uhc.pvp.util.commands.KitCommand;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -17,7 +16,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -70,8 +68,8 @@ public class PVPManagerPlugin extends JavaPlugin {
         initializeConfig();
         Debug.init(this);
         Bukkit.getPluginManager().registerEvents(dataManager, this);
-        enableFeatures();
         initializeKits();
+        enableFeatures();
 
         subCommands.register("pvpmanager", new ReloadCommand());
     }
@@ -95,7 +93,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         registerDefault(CombatTagger.class, new UHCCombatTagger());
         registerDefault(LobbyManager.class, new UHCLobbyManager(this));
         registerDefault(PVPRestrictionManager.class, new UHCPVPRestrictionManager());
-        registerDefault(SpawnManager.class, new UHCSpawnManager(SpawnChooser.random()));
+        registerDefault(SpawnManager.class, new UHCSpawnManager(SpawnChooser.far()));
         // Depends on SpawnManager, PVPRestrictionManager and CombatTagger
         registerDefault(PVPManager.class, new UHCPVPManager(this));
         // Depends on PVPManagerPlugin, LobbyManager

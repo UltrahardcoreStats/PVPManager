@@ -6,6 +6,7 @@ import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.events.PlayerTaggedEvent;
 import com.ttaylorr.uhc.pvp.services.*;
 import com.ttaylorr.uhc.pvp.services.interfaces.PVPUtility;
+import com.ttaylorr.uhc.pvp.services.interfaces.SpawnChooser;
 import com.ttaylorr.uhc.pvp.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Feature, Listener, CommandListener {
+    private final SpawnChooser.Context context;
     SpawnManager spawnManager;
     PVPRestrictionManager pvpRestrictionManager;
     CombatTagger combatTagger;
@@ -46,6 +48,7 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
                 new RemoveSpawnCommand(),
                 new RespawnSpawnCommand(),
         };
+        context = new SpawnChooser.Context(this);
     }
 
     @Override
@@ -87,13 +90,11 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
     protected void onExit(final Player p, Continuation continuation) {
         if(combatTagger.isTagged(p))
             continuation.failure();
-        immediateExit(p);
         continuation = new ContinuationCounter(new Continuation(continuation) {
             @Override
             public void success() {
                 immediateExit(p);
                 super.success();
-                Message.Broadcast.message(p.getDisplayName() + " left the arena!");
             }
         }, p, 5, "%d seconds left...", "Exiting PVP!");
         continuation.success();
@@ -101,6 +102,7 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
 
     @Override
     protected void onImmediateExit(Player p) {
+        Message.Broadcast.message(p.getDisplayName() + " left the arena!");
         for (PVPUtility utility : utilityList)
             utility.unsubscribe(p);
     }
@@ -142,7 +144,7 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
             KitLoader.clear(event.getPlayer().getInventory());
             getPlugin().getLogger().warning("Kit not found! pvp_default");
         }
-        event.setRespawnLocation(spawnManager.getSpawn(event.getPlayer()));
+        event.setRespawnLocation(spawnManager.getSpawn(event.getPlayer(), context));
     }
 
     private void respawn(Player player) {
@@ -153,7 +155,7 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
             KitLoader.clear(player.getInventory());
             getPlugin().getLogger().warning("Kit not found! pvp_default");
         }
-        spawnManager.respawn(player);
+        spawnManager.respawn(player, context);
         //player.setWalkSpeed(0.2888889014720917f);
         player.setWalkSpeed(0.24f);
         //player.setWalkSpeed(0.2f);

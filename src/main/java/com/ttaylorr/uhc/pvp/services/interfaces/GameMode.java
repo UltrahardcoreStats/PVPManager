@@ -8,4 +8,5 @@ public interface GameMode {
 
     public void exit(Player p, Continuation continuation);
     public void immediateExit(Player p);
+    public Iterable<Player> getPlayers();
 }

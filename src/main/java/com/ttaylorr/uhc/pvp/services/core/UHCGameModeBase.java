@@ -57,4 +57,9 @@ public abstract class UHCGameModeBase extends UHCServiceBase implements GameMode
     public boolean isInGameMode(Player p) {
         return players.contains(p);
     }
+
+    @Override
+    public Iterable<Player> getPlayers() {
+        return players;
+    }
 }
