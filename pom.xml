@@ -78,4 +78,17 @@
             </resource>
         </resources>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>dykam-repo</id>
+            <name>Internal Releases</name>
+            <url>http://box.dykam.nl:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>dykam-repo</id>
+            <name>Internal Releases</name>
+            <url>http://box.dykam.nl:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
