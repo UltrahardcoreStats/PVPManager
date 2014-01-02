@@ -1,4 +1,0 @@
-name: PVPManagerPlugin
-version: 3.0
-main: com.ttaylorr.uhc.pvp.PVPManagerPluginPlugin
-softdepend: [WorldGuard,Multiverse-Core]
