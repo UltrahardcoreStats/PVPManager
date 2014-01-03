@@ -53,6 +53,7 @@ public class PVPManagerPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        initSerializables();
         dataManager = new PlayerDataManager();
         registerProviders();
         UserManager userManager = Bukkit.getServicesManager().getRegistration(UserManager.class).getProvider();
@@ -62,8 +63,11 @@ public class PVPManagerPlugin extends JavaPlugin {
             initialize();
     }
 
-    public void initialize() {
+    private void initSerializables() {
         SerializableLocation.init();
+    }
+
+    public void initialize() {
         instance = this;
         initializeConfig();
         Debug.init(this);
