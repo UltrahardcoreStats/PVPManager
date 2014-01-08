@@ -8,14 +8,12 @@ import org.bukkit.scheduler.BukkitTask;
 public class ContinuationCounter extends Continuation implements Runnable {
     private int seconds;
     private final Runnable tick;
-    private final Runnable success;
     private BukkitTask task;
 
-    public ContinuationCounter(Continuation continuation, int seconds, Runnable tick, Runnable success) {
+    public ContinuationCounter(Continuation continuation, int seconds, Runnable tick) {
         super(continuation);
         this.seconds = seconds;
         this.tick = tick;
-        this.success = success;
         if(tick != null) {
             tick.run();
         }
@@ -28,13 +26,16 @@ public class ContinuationCounter extends Continuation implements Runnable {
     }
 
     @Override
+    public void failure() {
+        validate();
+        task.cancel();
+    }
+
+    @Override
     public void run() {
         if(--seconds == 0) {
             task.cancel();
             getNext().success();
-            if(success != null) {
-                success.run();
-            }
         } else if (tick != null) {
             tick.run();
         }

@@ -25,6 +25,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,7 +38,7 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
     PVPRestrictionManager pvpRestrictionManager;
     CombatTagger combatTagger;
     List<PVPUtility> utilityList;
-    Map<Player, Continuation> exitters;
+    Map<Player, Runnable> exitters;
     Command[] commands;
 
 
@@ -95,15 +96,16 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
             Message.message(p, "%d seconds left...");
             p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1, 1);
         };
-        Runnable timerSuccess = () -> Message.message(p, "Exiting PVP!");
         Continuation successContinuation = new Continuation(continuation) {
             @Override
             public void success() {
+                Message.message(p, "Exiting PVP!");
                 immediateExit(p);
                 super.success();
             }
         };
-        continuation = new ContinuationCounter(successContinuation, 5, timerTick, timerSuccess);
+        continuation = new ContinuationCounter(successContinuation, 5, timerTick);
+        exitters.put(p, continuation::failure);
         continuation.success();
     }
 
@@ -122,7 +124,7 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
             return;
 
         if(exitters.containsKey(pte.getPlayer())) {
-            exitters.remove(pte.getPlayer()).failure();
+            exitters.remove(pte.getPlayer()).run();
         }
     }
 
