@@ -11,6 +11,7 @@ import com.ttaylorr.uhc.pvp.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -90,13 +91,19 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
     protected void onExit(final Player p, Continuation continuation) {
         if(combatTagger.isTagged(p))
             continuation.failure();
-        continuation = new ContinuationCounter(new Continuation(continuation) {
+        Runnable timerTick = () -> {
+            Message.message(p, "%d seconds left...");
+            p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1, 1);
+        };
+        Runnable timerSuccess = () -> Message.message(p, "Exiting PVP!");
+        Continuation successContinuation = new Continuation(continuation) {
             @Override
             public void success() {
                 immediateExit(p);
                 super.success();
             }
-        }, p, 5, "%d seconds left...", "Exiting PVP!");
+        };
+        continuation = new ContinuationCounter(successContinuation, 5, timerTick, timerSuccess);
         continuation.success();
     }
 

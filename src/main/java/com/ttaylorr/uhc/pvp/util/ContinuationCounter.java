@@ -6,20 +6,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitTask;
 
 public class ContinuationCounter extends Continuation implements Runnable {
-    private final CommandSender receiver;
     private int seconds;
-    private final String tickMessage;
-    private final String successMessage;
+    private final Runnable tick;
+    private final Runnable success;
     private BukkitTask task;
 
-    public ContinuationCounter(Continuation continuation, CommandSender receiver, int seconds, String tickMessage, String successMessage) {
+    public ContinuationCounter(Continuation continuation, int seconds, Runnable tick, Runnable success) {
         super(continuation);
-        this.receiver = receiver;
         this.seconds = seconds;
-        this.tickMessage = tickMessage;
-        this.successMessage = successMessage;
-        if(tickMessage != null) {
-            Message.message(receiver, String.format(tickMessage, seconds));
+        this.tick = tick;
+        this.success = success;
+        if(tick != null) {
+            tick.run();
         }
     }
 
@@ -34,11 +32,11 @@ public class ContinuationCounter extends Continuation implements Runnable {
         if(--seconds == 0) {
             task.cancel();
             getNext().success();
-            if(successMessage != null) {
-                Message.message(receiver, successMessage);
+            if(success != null) {
+                success.run();
             }
-        } else if (tickMessage != null) {
-            Message.message(receiver, String.format(tickMessage, seconds));
+        } else if (tick != null) {
+            tick.run();
         }
     }
 }
