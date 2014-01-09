@@ -86,6 +86,16 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
             utility.subscribe(p);
         respawn(p);
         Message.Broadcast.message(p.getDisplayName() + " joined the arena!");
+        for(Player other : Bukkit.getOnlinePlayers()) {
+            if(other.hasMetadata("vanished") && other.getMetadata("vanished").get(0).asBoolean())
+                continue;
+
+            if(isInGameMode(other)) {
+                p.showPlayer(other);
+            } else {
+                p.hidePlayer(other);
+            }
+        }
     }
 
     @Override

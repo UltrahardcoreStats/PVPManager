@@ -54,6 +54,12 @@ public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Fe
             KitLoader.clear(p.getInventory());
             getPlugin().getLogger().warning("Kit not found! lobby   ");
         }
+        for(Player other : Bukkit.getOnlinePlayers()) {
+            if(other.hasMetadata("vanished") && other.getMetadata("vanished").get(0).asBoolean())
+                continue;
+
+            p.showPlayer(other);
+        }
     }
 
     @Override
