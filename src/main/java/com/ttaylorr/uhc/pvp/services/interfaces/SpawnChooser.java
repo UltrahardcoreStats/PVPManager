@@ -1,6 +1,6 @@
 package com.ttaylorr.uhc.pvp.services.interfaces;
 
-import com.ttaylorr.uhc.pvp.services.SpawnManager;
+import com.ttaylorr.uhc.pvp.services.core.UHCSpawnManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -8,7 +8,7 @@ public abstract class SpawnChooser {
     private static final RandomChooser randomChooser = new RandomChooser();
     private static final FarChooser farChooser = new FarChooser();
 
-    public abstract Location choose(Player player, SpawnManager spawns, Context context);
+    public abstract Location choose(Player player, UHCSpawnManager spawns, Context context);
     public static SpawnChooser random() {
         return randomChooser;
     }
@@ -17,14 +17,14 @@ public abstract class SpawnChooser {
     }
     static class RandomChooser extends SpawnChooser {
         @Override
-        public Location choose(Player player, SpawnManager spawns, Context context) {
+        public Location choose(Player player, UHCSpawnManager spawns, Context context) {
             return spawns.get((int)(Math.random() * spawns.size()));
         }
     }
 
     static class FarChooser extends SpawnChooser {
         @Override
-        public Location choose(Player player, SpawnManager spawns, Context context) {
+        public Location choose(Player player, UHCSpawnManager spawns, Context context) {
             Location furthestLocation = null;
             double furthestDistance = 0;
             for(Location loc : spawns) {

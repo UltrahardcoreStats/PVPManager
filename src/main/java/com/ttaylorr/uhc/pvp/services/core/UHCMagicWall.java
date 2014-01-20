@@ -2,7 +2,6 @@ package com.ttaylorr.uhc.pvp.services.core;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.ttaylorr.uhc.pvp.services.interfaces.PVPUtility;
 import com.ttaylorr.uhc.pvp.util.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -10,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class UHCMagicWall implements PVPUtility {
+public class UHCMagicWall {
     ProtectedRegion region;
     List<ProtectedRegion> children;
     WorldGuardPlugin worldGuard;
@@ -22,12 +21,10 @@ public class UHCMagicWall implements PVPUtility {
         Debug.info("UHCMagicWall: region " + region + " has " + children.size() + " children");
     }
 
-    @Override
     public void subscribe(Player player) {
 
     }
 
-    @Override
     public void unsubscribe(Player player) {
 
     }

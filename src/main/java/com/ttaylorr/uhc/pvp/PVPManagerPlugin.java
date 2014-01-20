@@ -1,9 +1,7 @@
 package com.ttaylorr.uhc.pvp;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.ttaylorr.uhc.pvp.services.*;
 import com.ttaylorr.uhc.pvp.services.core.*;
-import com.ttaylorr.uhc.pvp.services.interfaces.PVPUtility;
 import com.ttaylorr.uhc.pvp.services.interfaces.SpawnChooser;
 import com.ttaylorr.uhc.pvp.util.*;
 import com.ttaylorr.uhc.pvp.util.serialization.SerializableLocation;
@@ -28,7 +26,6 @@ import java.util.List;
 public class PVPManagerPlugin extends JavaPlugin {
 
     private static PVPManagerPlugin instance;
-    List<Feature> features;
     List<Persistent> persistencies;
     CommandMap subCommands;
     PlayerDataManager dataManager;
@@ -37,6 +34,7 @@ public class PVPManagerPlugin extends JavaPlugin {
     private Spector pvpSpector;
     private Spector spectatorSpector;
     private Spector adminSpector;
+    private UHCUserManager userManager;
 
     public static PVPManagerPlugin get() {
         return instance;
@@ -44,19 +42,13 @@ public class PVPManagerPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        for (Feature feature : features)
-            feature.onDisable();
     }
 
     @Override
     public void onEnable() {
         initSerializables();
         dataManager = new PlayerDataManager();
-        registerProviders();
-        UserManager userManager = Bukkit.getServicesManager().getRegistration(UserManager.class).getProvider();
-        listeners = new Listeners(this, userManager);
-        Bukkit.getPluginManager().registerEvents(listeners, this);
-        if(Bukkit.getWorld("uhc") != null)
+//        if(Bukkit.getWorld("uhc") != null)
             initialize();
     }
 
@@ -70,8 +62,10 @@ public class PVPManagerPlugin extends JavaPlugin {
         Debug.init(this);
         Bukkit.getPluginManager().registerEvents(dataManager, this);
         initializeKits();
-        enableFeatures();
         initializeSpector();
+        registerProviders();
+        listeners = new Listeners(this, userManager);
+        Bukkit.getPluginManager().registerEvents(listeners, this);
 
         subCommands.register("pvpmanager", new ReloadCommand());
     }
@@ -96,7 +90,7 @@ public class PVPManagerPlugin extends JavaPlugin {
 
         adminSpector.showAll();
         adminSpector.hideForAll();
-        adminSpector.setShield(SpectorShield.noShield());
+        adminSpector.setShield(SpectorShield.noShield().canPickup(false));
     }
 
     private void initializeKits() {
@@ -104,30 +98,28 @@ public class PVPManagerPlugin extends JavaPlugin {
         Bukkit.getServicesManager().register(KitManager.class, kitManager, this, ServicePriority.Normal);
     }
 
-    private void enableFeatures() {
-        for(Feature feature : features)
-            feature.onEnable();
-    }
-
     private void registerProviders() {
-        features = new ArrayList<>();
         persistencies = new ArrayList<>();
         subCommands = new PVPManagerCommandMap();
-        registerDefault(CombatTagger.class, new UHCCombatTagger());
-        registerDefault(LobbyManager.class, new UHCLobbyManager(this));
-        registerDefault(PVPRestrictionManager.class, new UHCPVPRestrictionManager());
-        registerDefault(SpawnManager.class, new UHCSpawnManager(SpawnChooser.far()));
+        UHCCombatTagger combatTagger = new UHCCombatTagger();
+        registerDefault(combatTagger);
+        UHCLobbyManager lobbyManager = new UHCLobbyManager(this, lobbySpector);
+        registerDefault(lobbyManager);
+        UHCSpawnManager spawnManager = new UHCSpawnManager(SpawnChooser.far());
+        registerDefault(spawnManager);
         // Depends on SpawnManager, PVPRestrictionManager and CombatTagger
-        registerDefault(PVPManager.class, new UHCPVPManager(this));
+        UHCPVPManager pvpManager = new UHCPVPManager(this, pvpSpector, spawnManager, combatTagger);
+        registerDefault(pvpManager);
         // Depends on PVPManagerPlugin, LobbyManager
-        registerDefault(UserManager.class, new UHCUserManager(this));
+        userManager = new UHCUserManager(this, pvpManager, lobbyManager);
+        registerDefault(userManager);
 
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
             WorldGuardPlugin worldGuard = (WorldGuardPlugin)Bukkit.getPluginManager().getPlugin("WorldGuard");
             World world = Bukkit.getWorld("world");
             String region = getConfig().getString("arena.region");
             if (world != null && worldGuard.getRegionManager(world).hasRegion(region)) {
-                registerDefault(PVPUtility.class, new UHCMagicWall("world", region));
+                registerDefault(new UHCMagicWall("world", region));
             }
         }
     }
@@ -164,9 +156,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         return dataManager;
     }
 
-    <T> void registerDefault(Class<T> type, T service) {
-        Bukkit.getServicesManager().register(type, service, this, ServicePriority.Lowest);
-        if (service instanceof Feature) features.add((Feature) service);
+    void registerDefault(Object service) {
         if (service instanceof Persistent) persistencies.add((Persistent) service);
         if(service instanceof CommandListener) {
             CommandListener commandListener = (CommandListener)service;

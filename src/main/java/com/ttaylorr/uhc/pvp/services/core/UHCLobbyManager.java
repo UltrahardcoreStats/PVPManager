@@ -1,12 +1,12 @@
 package com.ttaylorr.uhc.pvp.services.core;
 
 import com.ttaylorr.uhc.pvp.CommandListener;
-import com.ttaylorr.uhc.pvp.Feature;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
-import com.ttaylorr.uhc.pvp.services.LobbyManager;
+import com.ttaylorr.uhc.pvp.services.interfaces.GameMode;
 import com.ttaylorr.uhc.pvp.util.*;
 import nl.dykam.dev.Kit;
 import nl.dykam.dev.KitAPI;
+import nl.dykam.dev.spector.Spector;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -21,24 +21,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.util.Vector;
 
-public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Feature, Listener, CommandListener {
+public class UHCLobbyManager extends UHCGameModeBase implements Listener, CommandListener, GameMode {
     private Command[] commands;
 
-    public UHCLobbyManager(PVPManagerPlugin plugin) {
+    public UHCLobbyManager(PVPManagerPlugin plugin, Spector lobbySpector) {
         super(plugin);
         commands = new Command[] {
             new SetSpawnCommand(),
         };
-    }
-
-    @Override
-    public boolean onEnable() {
         Bukkit.getPluginManager().registerEvents(this, getPlugin());
-        return false;
-    }
-
-    public void onDisable() {
-        // TODO Auto-generated method stub
     }
 
     @Override

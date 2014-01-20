@@ -1,6 +1,6 @@
 package com.ttaylorr.uhc.pvp;
 
-import com.ttaylorr.uhc.pvp.services.UserManager;
+import com.ttaylorr.uhc.pvp.services.core.UHCUserManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -10,9 +10,9 @@ import org.bukkit.event.world.WorldLoadEvent;
 
 public class Listeners implements Listener {
     private PVPManagerPlugin plugin;
-    private UserManager userManager;
+    private UHCUserManager userManager;
 
-    public Listeners(PVPManagerPlugin plugin, UserManager userManager) {
+    public Listeners(PVPManagerPlugin plugin, UHCUserManager userManager) {
         this.plugin = plugin;
         this.userManager = userManager;
     }

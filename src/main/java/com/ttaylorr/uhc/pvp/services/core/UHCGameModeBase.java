@@ -8,8 +8,10 @@ import org.bukkit.entity.Player;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class UHCGameModeBase extends UHCServiceBase implements GameMode {
+public abstract class UHCGameModeBase implements GameMode {
     private Set<Player> players;
+    private PVPManagerPlugin plugin;
+
     protected abstract void onEnter(Player p);
 
     /**
@@ -27,7 +29,7 @@ public abstract class UHCGameModeBase extends UHCServiceBase implements GameMode
     protected abstract void onImmediateExit(Player p);
 
     protected UHCGameModeBase(PVPManagerPlugin plugin) {
-        super(plugin);
+        this.plugin = plugin;
         players = new HashSet<>();
     }
 
@@ -61,5 +63,9 @@ public abstract class UHCGameModeBase extends UHCServiceBase implements GameMode
     @Override
     public Iterable<Player> getPlayers() {
         return players;
+    }
+
+    public PVPManagerPlugin getPlugin() {
+        return plugin;
     }
 }

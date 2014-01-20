@@ -1,6 +1,5 @@
 package com.ttaylorr.uhc.pvp.events;
 
-import com.ttaylorr.uhc.pvp.services.CombatTagger;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
@@ -8,8 +7,8 @@ public class PlayerTaggedEvent extends CombatTagEvent {
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled;
 
-    public PlayerTaggedEvent(Player player, CombatTagger service) {
-        super(player, service);
+    public PlayerTaggedEvent(Player player) {
+        super(player);
     }
 
     public boolean isCancelled() {

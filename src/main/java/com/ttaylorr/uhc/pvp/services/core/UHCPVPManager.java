@@ -1,18 +1,14 @@
 package com.ttaylorr.uhc.pvp.services.core;
 
 import com.ttaylorr.uhc.pvp.CommandListener;
-import com.ttaylorr.uhc.pvp.Feature;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.events.PlayerTaggedEvent;
-import com.ttaylorr.uhc.pvp.services.CombatTagger;
-import com.ttaylorr.uhc.pvp.services.PVPManager;
-import com.ttaylorr.uhc.pvp.services.PVPRestrictionManager;
-import com.ttaylorr.uhc.pvp.services.SpawnManager;
-import com.ttaylorr.uhc.pvp.services.interfaces.PVPUtility;
+import com.ttaylorr.uhc.pvp.services.interfaces.GameMode;
 import com.ttaylorr.uhc.pvp.services.interfaces.SpawnChooser;
 import com.ttaylorr.uhc.pvp.util.*;
 import nl.dykam.dev.Kit;
 import nl.dykam.dev.KitAPI;
+import nl.dykam.dev.spector.Spector;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,27 +22,27 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Feature, Listener, CommandListener {
+public class UHCPVPManager extends UHCGameModeBase implements Listener, CommandListener, GameMode {
     private final SpawnChooser.Context context;
-    SpawnManager spawnManager;
-    PVPRestrictionManager pvpRestrictionManager;
-    CombatTagger combatTagger;
-    List<PVPUtility> utilityList;
+    private final Spector pvpSpector;
+    UHCSpawnManager spawnManager;
+    UHCCombatTagger combatTagger;
     Map<Player, Continuation> exitters;
     Command[] commands;
 
 
-    public UHCPVPManager(PVPManagerPlugin plugin) {
+    public UHCPVPManager(PVPManagerPlugin plugin, Spector pvpSpector, UHCSpawnManager spawnManager, UHCCombatTagger combatTagger) {
         super(plugin);
+        this.pvpSpector = pvpSpector;
+        this.spawnManager = spawnManager;
+        this.combatTagger = combatTagger;
 
         commands = new Command[] {
                 new AddSpawnCommand(),
@@ -54,39 +50,12 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
                 new RespawnSpawnCommand(),
         };
         context = new SpawnChooser.Context(this);
-    }
-
-    @Override
-    public boolean onEnable() {
-        if (!Bukkit.getServicesManager().isProvidedFor(SpawnManager.class))
-            return false;
-        if (!Bukkit.getServicesManager().isProvidedFor(PVPRestrictionManager.class))
-            return false;
-        if (!Bukkit.getServicesManager().isProvidedFor(CombatTagger.class))
-            return false;
-        spawnManager = Bukkit.getServicesManager().getRegistration(SpawnManager.class).getProvider();
-        pvpRestrictionManager = Bukkit.getServicesManager().getRegistration(PVPRestrictionManager.class).getProvider();
-        combatTagger = Bukkit.getServicesManager().getRegistration(CombatTagger.class).getProvider();
-
-        utilityList = new ArrayList<>();
-        for (RegisteredServiceProvider<PVPUtility> provider : Bukkit.getServicesManager().getRegistrations(PVPUtility.class)) {
-            utilityList.add(provider.getProvider());
-        }
 
         Bukkit.getPluginManager().registerEvents(this, getPlugin());
-
-        return true;
-    }
-
-    @Override
-    public void onDisable() {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     protected void onEnter(Player p) {
-        for (PVPUtility utility : utilityList)
-            utility.subscribe(p);
         respawn(p);
         Message.Broadcast.message(p.getDisplayName() + " joined the arena!");
         for(Player other : Bukkit.getOnlinePlayers()) {
@@ -120,15 +89,11 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
     @Override
     protected void onImmediateExit(Player p) {
         Message.Broadcast.message(p.getDisplayName() + " left the arena!");
-        for (PVPUtility utility : utilityList)
-            utility.unsubscribe(p);
     }
 
     @EventHandler
     private void onPlayerTagged(PlayerTaggedEvent pte) {
         if(!isInGameMode(pte.getPlayer()))
-            return;
-        if(pte.getService() != combatTagger)
             return;
 
         if(exitters.containsKey(pte.getPlayer())) {
