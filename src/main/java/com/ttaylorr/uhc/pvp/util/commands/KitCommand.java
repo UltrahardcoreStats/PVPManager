@@ -10,13 +10,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class KitCommand extends PVPManagerCommand implements CommandExecutor {
-    private PVPManagerPlugin plugin;
 
     public KitCommand(PVPManagerPlugin plugin) {
         super(null, "kit");
         setExecutor(this);
         Preconditions.checkArgument(plugin.isEnabled(), "Plugin not enabled!");
-        this.plugin = Preconditions.checkNotNull(plugin, "Plugin");
     }
 
     @Override
