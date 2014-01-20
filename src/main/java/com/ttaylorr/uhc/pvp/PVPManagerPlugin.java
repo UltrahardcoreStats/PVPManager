@@ -9,6 +9,8 @@ import com.ttaylorr.uhc.pvp.util.*;
 import com.ttaylorr.uhc.pvp.util.serialization.SerializableLocation;
 import nl.dykam.dev.FileKitManager;
 import nl.dykam.dev.KitManager;
+import nl.dykam.dev.spector.Spector;
+import nl.dykam.dev.spector.SpectorAPI;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -30,6 +32,9 @@ public class PVPManagerPlugin extends JavaPlugin {
     CommandMap subCommands;
     PlayerDataManager dataManager;
     Listeners listeners;
+    private Spector lobbySpector;
+    private Spector pvpSpector;
+    private Spector spectatorSpector;
 
     public static PVPManagerPlugin get() {
         return instance;
@@ -64,8 +69,24 @@ public class PVPManagerPlugin extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(dataManager, this);
         initializeKits();
         enableFeatures();
+        initializeSpector();
 
         subCommands.register("pvpmanager", new ReloadCommand());
+    }
+
+    private void initializeSpector() {
+        lobbySpector = SpectorAPI.create(this, "lobby");
+        pvpSpector = SpectorAPI.create(this, "pvp");
+        spectatorSpector = SpectorAPI.create(this, "spectator");
+
+        lobbySpector.show(pvpSpector);
+        lobbySpector.show(spectatorSpector);
+
+        pvpSpector.hide(lobbySpector);
+        pvpSpector.hide(spectatorSpector);
+
+        spectatorSpector.show(lobbySpector);
+        spectatorSpector.show(pvpSpector);
     }
 
     private void initializeKits() {
