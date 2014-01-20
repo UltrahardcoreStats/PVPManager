@@ -11,6 +11,7 @@ import nl.dykam.dev.FileKitManager;
 import nl.dykam.dev.KitManager;
 import nl.dykam.dev.spector.Spector;
 import nl.dykam.dev.spector.SpectorAPI;
+import nl.dykam.dev.spector.SpectorShield;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -35,6 +36,7 @@ public class PVPManagerPlugin extends JavaPlugin {
     private Spector lobbySpector;
     private Spector pvpSpector;
     private Spector spectatorSpector;
+    private Spector adminSpector;
 
     public static PVPManagerPlugin get() {
         return instance;
@@ -78,15 +80,23 @@ public class PVPManagerPlugin extends JavaPlugin {
         lobbySpector = SpectorAPI.create(this, "lobby");
         pvpSpector = SpectorAPI.create(this, "pvp");
         spectatorSpector = SpectorAPI.create(this, "spectator");
+        adminSpector = SpectorAPI.create(this, "admin");
 
         lobbySpector.show(pvpSpector);
         lobbySpector.show(spectatorSpector);
+        lobbySpector.setShield(SpectorShield.noShield());
 
         pvpSpector.hide(lobbySpector);
         pvpSpector.hide(spectatorSpector);
+        pvpSpector.setShield(SpectorShield.noShield());
 
         spectatorSpector.show(lobbySpector);
         spectatorSpector.show(pvpSpector);
+        spectatorSpector.setShield(SpectorShield.ghost());
+
+        adminSpector.showAll();
+        adminSpector.hideForAll();
+        adminSpector.setShield(SpectorShield.noShield());
     }
 
     private void initializeKits() {
