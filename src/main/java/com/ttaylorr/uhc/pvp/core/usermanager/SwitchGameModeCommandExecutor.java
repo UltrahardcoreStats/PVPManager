@@ -1,7 +1,7 @@
-package com.ttaylorr.uhc.pvp.services.core.usermanager;
+package com.ttaylorr.uhc.pvp.core.usermanager;
 
-import com.ttaylorr.uhc.pvp.services.core.UHCUserManager;
-import com.ttaylorr.uhc.pvp.services.interfaces.GameMode;
+import com.ttaylorr.uhc.pvp.core.UserManager;
+import com.ttaylorr.uhc.pvp.core.interfaces.GameMode;
 import com.ttaylorr.uhc.pvp.util.Checker;
 import com.ttaylorr.uhc.pvp.util.Continuation;
 import com.ttaylorr.uhc.pvp.util.Message;
@@ -14,10 +14,10 @@ import static com.ttaylorr.uhc.pvp.util.Message.warn;
 
 public class SwitchGameModeCommandExecutor implements CommandExecutor {
     private String alreadyInMessage;
-    private UHCUserManager userManager;
+    private UserManager userManager;
     private GameMode to;
 
-    public SwitchGameModeCommandExecutor(UHCUserManager userManager, String alreadyInMessage, GameMode to) {
+    public SwitchGameModeCommandExecutor(UserManager userManager, String alreadyInMessage, GameMode to) {
         this.userManager = userManager;
         this.alreadyInMessage = alreadyInMessage;
         this.to = to;
@@ -28,7 +28,7 @@ public class SwitchGameModeCommandExecutor implements CommandExecutor {
         if(!Checker.isPlayer(commandSender))
             return true;
         final Player player = (Player) commandSender;
-        final UHCUserManager.UserData userData = userManager.getUserData(player);
+        final UserManager.UserData userData = userManager.getUserData(player);
         if(userData.transitioning) {
             Message.warn(player, "You are already switching game mode!");
             return true;

@@ -1,9 +1,9 @@
-package com.ttaylorr.uhc.pvp.services.core;
+package com.ttaylorr.uhc.pvp.core;
 
 import com.ttaylorr.uhc.pvp.CommandListener;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
-import com.ttaylorr.uhc.pvp.services.core.usermanager.SwitchGameModeCommandExecutor;
-import com.ttaylorr.uhc.pvp.services.interfaces.GameMode;
+import com.ttaylorr.uhc.pvp.core.usermanager.SwitchGameModeCommandExecutor;
+import com.ttaylorr.uhc.pvp.core.interfaces.GameMode;
 import com.ttaylorr.uhc.pvp.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,17 +13,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 
-public class UHCUserManager implements CommandListener {
+public class UserManager implements CommandListener {
     private final PlayerDataManager dataManager;
     private final PVPManagerCommand quitCommand;
     private final PVPManagerCommand joinCommand;
-    private UHCPVPManager pvpManager;
-    private UHCLobbyManager lobbyManager;
+    private PVPManager pvpManager;
+    private LobbyManager lobbyManager;
 
     private final Command[] commands;
     private PVPManagerPlugin plugin;
 
-    public UHCUserManager(PVPManagerPlugin plugin, UHCPVPManager pvpManager, UHCLobbyManager lobbyManager) {
+    public UserManager(PVPManagerPlugin plugin, PVPManager pvpManager, LobbyManager lobbyManager) {
         this.plugin = plugin;
         this.pvpManager = pvpManager;
         this.lobbyManager = lobbyManager;
@@ -43,7 +43,7 @@ public class UHCUserManager implements CommandListener {
                     if(!userData.isSubscribed()) {
                         Message.warn(player, "You are not in a gamemode. Please relog");
                     } else {
-                        Message.message(player, "You are in "  + (userData.gameMode == UHCUserManager.this.pvpManager
+                        Message.message(player, "You are in "  + (userData.gameMode == UserManager.this.pvpManager
                                 ? "PVP, to leave: " + ChatColor.UNDERLINE + "/pvp quit"
                                 : "the lobby, to join: " + ChatColor.UNDERLINE + "/pvp join"
                         ));

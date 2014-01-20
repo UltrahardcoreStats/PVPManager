@@ -1,4 +1,4 @@
-package com.ttaylorr.uhc.pvp.services.core.combattagger;
+package com.ttaylorr.uhc.pvp.core.combattagger;
 
 import com.google.common.base.Preconditions;
 import org.bukkit.configuration.ConfigurationSection;

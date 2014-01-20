@@ -1,4 +1,4 @@
-package com.ttaylorr.uhc.pvp.services.core;
+package com.ttaylorr.uhc.pvp.core;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -9,16 +9,16 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class UHCMagicWall {
+public class MagicWall {
     ProtectedRegion region;
     List<ProtectedRegion> children;
     WorldGuardPlugin worldGuard;
 
-    public UHCMagicWall(String world, String region) {
+    public MagicWall(String world, String region) {
         worldGuard = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin("WorldGuard");
         this.region = worldGuard.getRegionManager(Bukkit.getWorld(world)).getRegion(region);
         children = getChildren(this.region, Bukkit.getWorld(world));
-        Debug.info("UHCMagicWall: region " + region + " has " + children.size() + " children");
+        Debug.info("MagicWall: region " + region + " has " + children.size() + " children");
     }
 
     public void subscribe(Player player) {

@@ -1,7 +1,7 @@
-package com.ttaylorr.uhc.pvp.services.core;
+package com.ttaylorr.uhc.pvp.core;
 
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
-import com.ttaylorr.uhc.pvp.services.interfaces.SpawnChooser;
+import com.ttaylorr.uhc.pvp.core.interfaces.SpawnChooser;
 import com.ttaylorr.uhc.pvp.util.Config;
 import com.ttaylorr.uhc.pvp.util.serialization.SerializableLocation;
 import org.bukkit.Location;
@@ -11,12 +11,12 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UHCSpawnManager extends ArrayList<Location> {
+public class SpawnManager extends ArrayList<Location> {
     private SpawnChooser chooser;
     private ConfigurationSection config;
     private String configPath;
 
-    public UHCSpawnManager(SpawnChooser chooser) {
+    public SpawnManager(SpawnChooser chooser) {
         setSpawnChooser(chooser);
         if(config == null) {
             setConfig(PVPManagerPlugin.get().getConfig(), "arena.spawns");

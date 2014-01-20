@@ -1,6 +1,6 @@
-package com.ttaylorr.uhc.pvp.services.core.combattagger;
+package com.ttaylorr.uhc.pvp.core.combattagger;
 
-import com.ttaylorr.uhc.pvp.services.core.UHCCombatTagger;
+import com.ttaylorr.uhc.pvp.core.CombatTagger;
 import com.ttaylorr.uhc.pvp.util.Message;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -13,10 +13,10 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class Listeners implements Listener {
-    private final UHCCombatTagger combatTagger;
+    private final CombatTagger combatTagger;
     private final CommandMatcher commandMatcher;
 
-    public Listeners(UHCCombatTagger combatTagger, CommandMatcher commandMatcher) {
+    public Listeners(CombatTagger combatTagger, CommandMatcher commandMatcher) {
         this.combatTagger = combatTagger;
         this.commandMatcher = commandMatcher;
     }

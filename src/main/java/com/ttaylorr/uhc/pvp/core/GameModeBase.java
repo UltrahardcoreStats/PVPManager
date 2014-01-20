@@ -1,14 +1,14 @@
-package com.ttaylorr.uhc.pvp.services.core;
+package com.ttaylorr.uhc.pvp.core;
 
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
-import com.ttaylorr.uhc.pvp.services.interfaces.GameMode;
+import com.ttaylorr.uhc.pvp.core.interfaces.GameMode;
 import com.ttaylorr.uhc.pvp.util.Continuation;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class UHCGameModeBase implements GameMode {
+public abstract class GameModeBase implements GameMode {
     private Set<Player> players;
     private PVPManagerPlugin plugin;
 
@@ -28,7 +28,7 @@ public abstract class UHCGameModeBase implements GameMode {
      */
     protected abstract void onImmediateExit(Player p);
 
-    protected UHCGameModeBase(PVPManagerPlugin plugin) {
+    protected GameModeBase(PVPManagerPlugin plugin) {
         this.plugin = plugin;
         players = new HashSet<>();
     }

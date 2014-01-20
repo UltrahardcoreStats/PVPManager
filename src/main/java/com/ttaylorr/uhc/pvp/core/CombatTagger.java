@@ -1,16 +1,16 @@
-package com.ttaylorr.uhc.pvp.services.core;
+package com.ttaylorr.uhc.pvp.core;
 
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
-import com.ttaylorr.uhc.pvp.services.core.combattagger.CommandMatcher;
+import com.ttaylorr.uhc.pvp.core.combattagger.CommandMatcher;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-public class UHCCombatTagger implements Listener {
+public class CombatTagger implements Listener {
     ConfigurationSection config;
     CommandMatcher commandMatcher;
 
-    public UHCCombatTagger() {
+    public CombatTagger() {
         config = PVPManagerPlugin.get().getConfig().getConfigurationSection("combattag");
         commandMatcher = CommandMatcher.construct(config);
     }

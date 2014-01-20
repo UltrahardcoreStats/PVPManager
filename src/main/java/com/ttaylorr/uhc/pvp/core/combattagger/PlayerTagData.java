@@ -1,4 +1,4 @@
-package com.ttaylorr.uhc.pvp.services.core.combattagger;
+package com.ttaylorr.uhc.pvp.core.combattagger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
