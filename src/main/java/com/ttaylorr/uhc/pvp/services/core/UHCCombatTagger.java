@@ -4,8 +4,6 @@ import com.ttaylorr.uhc.pvp.Feature;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.services.CombatTagger;
 import com.ttaylorr.uhc.pvp.services.core.combattagger.CommandMatcher;
-import com.ttaylorr.uhc.pvp.services.core.combattagger.Listeners;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;

@@ -1,11 +1,12 @@
 package com.ttaylorr.uhc.pvp.services.core.combattagger;
 
 import com.google.common.base.Preconditions;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.command.Command;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

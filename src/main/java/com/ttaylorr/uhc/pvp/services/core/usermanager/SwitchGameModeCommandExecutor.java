@@ -1,7 +1,7 @@
 package com.ttaylorr.uhc.pvp.services.core.usermanager;
 
-import com.ttaylorr.uhc.pvp.services.interfaces.GameMode;
 import com.ttaylorr.uhc.pvp.services.core.UHCUserManager;
+import com.ttaylorr.uhc.pvp.services.interfaces.GameMode;
 import com.ttaylorr.uhc.pvp.util.Checker;
 import com.ttaylorr.uhc.pvp.util.Continuation;
 import com.ttaylorr.uhc.pvp.util.Message;

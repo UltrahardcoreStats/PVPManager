@@ -1,7 +1,7 @@
 package com.ttaylorr.uhc.pvp.services;
 
-import com.ttaylorr.uhc.pvp.util.Persistent;
 import com.ttaylorr.uhc.pvp.services.interfaces.SpawnChooser;
+import com.ttaylorr.uhc.pvp.util.Persistent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 

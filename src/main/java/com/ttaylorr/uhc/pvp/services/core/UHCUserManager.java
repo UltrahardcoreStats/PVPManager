@@ -1,14 +1,15 @@
 package com.ttaylorr.uhc.pvp.services.core;
 
+import com.google.common.base.Preconditions;
 import com.ttaylorr.uhc.pvp.CommandListener;
 import com.ttaylorr.uhc.pvp.Feature;
-import com.ttaylorr.uhc.pvp.services.core.usermanager.SwitchGameModeCommandExecutor;
-import com.ttaylorr.uhc.pvp.util.*;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
-import com.ttaylorr.uhc.pvp.services.interfaces.GameMode;
 import com.ttaylorr.uhc.pvp.services.LobbyManager;
 import com.ttaylorr.uhc.pvp.services.PVPManager;
 import com.ttaylorr.uhc.pvp.services.UserManager;
+import com.ttaylorr.uhc.pvp.services.core.usermanager.SwitchGameModeCommandExecutor;
+import com.ttaylorr.uhc.pvp.services.interfaces.GameMode;
+import com.ttaylorr.uhc.pvp.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -59,6 +60,8 @@ public class UHCUserManager extends UHCServiceBase implements UserManager, Featu
     public boolean onEnable() {
         pvpManager = Bukkit.getServicesManager().getRegistration(PVPManager.class).getProvider();
         lobbyManager = Bukkit.getServicesManager().getRegistration(LobbyManager.class).getProvider();
+        Preconditions.checkNotNull(pvpManager);
+        Preconditions.checkNotNull(lobbyManager);
 
         joinCommand.setExecutor(new SwitchGameModeCommandExecutor(this, "You are already in PVP", pvpManager));
         quitCommand.setExecutor(new SwitchGameModeCommandExecutor(this, "You are already not in PVP", lobbyManager));

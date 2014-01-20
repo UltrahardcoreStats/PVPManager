@@ -2,19 +2,14 @@ package com.ttaylorr.uhc.pvp.services.core.combattagger;
 
 import com.ttaylorr.uhc.pvp.services.CombatTagger;
 import com.ttaylorr.uhc.pvp.util.Message;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.EnderPearl;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class Listeners implements Listener {
