@@ -61,6 +61,10 @@ public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Fe
                 continue;
 
             p.showPlayer(other);
+            if(isInGameMode(other))
+                other.showPlayer(p);
+            else
+                other.hidePlayer(p);
         }
     }
 

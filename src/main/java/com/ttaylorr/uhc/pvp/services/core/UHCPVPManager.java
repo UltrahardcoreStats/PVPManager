@@ -95,8 +95,10 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
 
             if(isInGameMode(other)) {
                 p.showPlayer(other);
+                other.showPlayer(p);
             } else {
                 p.hidePlayer(other);
+                other.showPlayer(p);
             }
         }
     }
