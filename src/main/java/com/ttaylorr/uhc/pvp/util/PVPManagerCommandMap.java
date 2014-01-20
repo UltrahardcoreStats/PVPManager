@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.util.StringUtil;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

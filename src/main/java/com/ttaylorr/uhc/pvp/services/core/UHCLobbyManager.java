@@ -5,6 +5,8 @@ import com.ttaylorr.uhc.pvp.Feature;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.services.LobbyManager;
 import com.ttaylorr.uhc.pvp.util.*;
+import nl.dykam.dev.Kit;
+import nl.dykam.dev.KitAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -47,12 +49,22 @@ public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Fe
         }
         p.teleport(getSpawn());
         p.setVelocity(new Vector());
-        Kit kit = getPlugin().getKits().getKit("lobby");
+        Kit kit = KitAPI.getManager().get("lobby");
         if(null != kit)
             kit.apply(p, true);
         else {
-            KitLoader.clear(p.getInventory());
+            InventoryUtils.clear(p.getInventory());
             getPlugin().getLogger().warning("Kit not found! lobby   ");
+        }
+        for(Player other : Bukkit.getOnlinePlayers()) {
+            if(other.hasMetadata("vanished") && other.getMetadata("vanished").get(0).asBoolean())
+                continue;
+
+            p.showPlayer(other);
+            if(isInGameMode(other))
+                other.showPlayer(p);
+            else
+                other.hidePlayer(p);
         }
     }
 
@@ -71,11 +83,11 @@ public class UHCLobbyManager extends UHCGameModeBase implements LobbyManager, Fe
         if(!isInGameMode(event.getPlayer()))
             return;
         event.setRespawnLocation(getSpawn());
-        Kit kit = getPlugin().getKits().getKit("lobby");
+        Kit kit = KitAPI.getManager().get("lobby");
         if(null != kit)
             kit.apply(event.getPlayer(), true);
         else {
-            KitLoader.clear(event.getPlayer().getInventory());
+            InventoryUtils.clear(event.getPlayer().getInventory());
             getPlugin().getLogger().warning("Kit not found! pvp_default");
         }
     }
