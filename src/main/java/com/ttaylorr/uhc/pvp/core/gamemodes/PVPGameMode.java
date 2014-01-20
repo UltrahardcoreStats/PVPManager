@@ -1,9 +1,10 @@
-package com.ttaylorr.uhc.pvp.core;
+package com.ttaylorr.uhc.pvp.core.gamemodes;
 
 import com.ttaylorr.uhc.pvp.CommandListener;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
+import com.ttaylorr.uhc.pvp.core.CombatTagger;
+import com.ttaylorr.uhc.pvp.core.SpawnManager;
 import com.ttaylorr.uhc.pvp.events.PlayerTaggedEvent;
-import com.ttaylorr.uhc.pvp.core.interfaces.GameMode;
 import com.ttaylorr.uhc.pvp.core.interfaces.SpawnChooser;
 import com.ttaylorr.uhc.pvp.util.*;
 import nl.dykam.dev.Kit;
@@ -29,7 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class PVPManager extends GameModeBase implements Listener, CommandListener, GameMode {
+public class PVPGameMode extends GameMode implements Listener, CommandListener {
     private final SpawnChooser.Context context;
     private final Spector pvpSpector;
     SpawnManager spawnManager;
@@ -38,7 +39,7 @@ public class PVPManager extends GameModeBase implements Listener, CommandListene
     Command[] commands;
 
 
-    public PVPManager(PVPManagerPlugin plugin, Spector pvpSpector, SpawnManager spawnManager, CombatTagger combatTagger) {
+    public PVPGameMode(PVPManagerPlugin plugin, Spector pvpSpector, SpawnManager spawnManager, CombatTagger combatTagger) {
         super(plugin);
         this.pvpSpector = pvpSpector;
         this.spawnManager = spawnManager;

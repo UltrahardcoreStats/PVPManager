@@ -1,5 +1,6 @@
 package com.ttaylorr.uhc.pvp.core.interfaces;
 
+import com.ttaylorr.uhc.pvp.core.gamemodes.GameMode;
 import com.ttaylorr.uhc.pvp.core.SpawnManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

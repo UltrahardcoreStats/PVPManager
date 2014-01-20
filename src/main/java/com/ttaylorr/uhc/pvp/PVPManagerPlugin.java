@@ -2,6 +2,8 @@ package com.ttaylorr.uhc.pvp;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.ttaylorr.uhc.pvp.core.*;
+import com.ttaylorr.uhc.pvp.core.gamemodes.LobbyMode;
+import com.ttaylorr.uhc.pvp.core.gamemodes.PVPGameMode;
 import com.ttaylorr.uhc.pvp.core.interfaces.SpawnChooser;
 import com.ttaylorr.uhc.pvp.util.*;
 import com.ttaylorr.uhc.pvp.util.serialization.SerializableLocation;
@@ -103,15 +105,15 @@ public class PVPManagerPlugin extends JavaPlugin {
         subCommands = new PVPManagerCommandMap();
         CombatTagger combatTagger = new CombatTagger();
         registerDefault(combatTagger);
-        LobbyManager lobbyManager = new LobbyManager(this, lobbySpector);
-        registerDefault(lobbyManager);
+        LobbyMode lobbyMode = new LobbyMode(this, lobbySpector);
+        registerDefault(lobbyMode);
         SpawnManager spawnManager = new SpawnManager(SpawnChooser.far());
         registerDefault(spawnManager);
         // Depends on SpawnManager, PVPRestrictionManager and CombatTagger
-        PVPManager pvpManager = new PVPManager(this, pvpSpector, spawnManager, combatTagger);
-        registerDefault(pvpManager);
-        // Depends on PVPManagerPlugin, LobbyManager
-        userManager = new UserManager(this, pvpManager, lobbyManager);
+        PVPGameMode pvpGameMode = new PVPGameMode(this, pvpSpector, spawnManager, combatTagger);
+        registerDefault(pvpGameMode);
+        // Depends on PVPManagerPlugin, LobbyMode
+        userManager = new UserManager(this, pvpGameMode, lobbyMode);
         registerDefault(userManager);
 
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {

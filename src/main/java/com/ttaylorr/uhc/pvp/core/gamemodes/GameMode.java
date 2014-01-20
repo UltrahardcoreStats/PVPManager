@@ -1,14 +1,13 @@
-package com.ttaylorr.uhc.pvp.core;
+package com.ttaylorr.uhc.pvp.core.gamemodes;
 
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
-import com.ttaylorr.uhc.pvp.core.interfaces.GameMode;
 import com.ttaylorr.uhc.pvp.util.Continuation;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class GameModeBase implements GameMode {
+public abstract class GameMode {
     private Set<Player> players;
     private PVPManagerPlugin plugin;
 
@@ -28,18 +27,16 @@ public abstract class GameModeBase implements GameMode {
      */
     protected abstract void onImmediateExit(Player p);
 
-    protected GameModeBase(PVPManagerPlugin plugin) {
+    protected GameMode(PVPManagerPlugin plugin) {
         this.plugin = plugin;
         players = new HashSet<>();
     }
 
-    @Override
     public void enter(Player player) {
         onEnter(player);
         players.add(player);
     }
 
-    @Override
     public void exit(final Player player, final Continuation continuation) {
         onExit(player, new Continuation(continuation) {
             @Override
@@ -50,7 +47,6 @@ public abstract class GameModeBase implements GameMode {
         });
     }
 
-    @Override
     public void immediateExit(Player p) {
         onImmediateExit(p);
         players.remove(p);
@@ -60,7 +56,6 @@ public abstract class GameModeBase implements GameMode {
         return players.contains(p);
     }
 
-    @Override
     public Iterable<Player> getPlayers() {
         return players;
     }

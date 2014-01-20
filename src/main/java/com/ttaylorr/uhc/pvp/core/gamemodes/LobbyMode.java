@@ -1,8 +1,7 @@
-package com.ttaylorr.uhc.pvp.core;
+package com.ttaylorr.uhc.pvp.core.gamemodes;
 
 import com.ttaylorr.uhc.pvp.CommandListener;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
-import com.ttaylorr.uhc.pvp.core.interfaces.GameMode;
 import com.ttaylorr.uhc.pvp.util.*;
 import nl.dykam.dev.Kit;
 import nl.dykam.dev.KitAPI;
@@ -21,10 +20,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.util.Vector;
 
-public class LobbyManager extends GameModeBase implements Listener, CommandListener, GameMode {
+public class LobbyMode extends GameMode implements Listener, CommandListener {
     private Command[] commands;
 
-    public LobbyManager(PVPManagerPlugin plugin, Spector lobbySpector) {
+    public LobbyMode(PVPManagerPlugin plugin, Spector lobbySpector) {
         super(plugin);
         commands = new Command[] {
             new SetSpawnCommand(),
