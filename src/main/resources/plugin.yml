@@ -3,11 +3,10 @@ version: ${project.version}
 description: ${project.description}
 main: ${plugin.mainClass}
 softdepend: [WorldGuard,Multiverse-Core]
+depend: [Kitter]
 commands:
   pvp:
     permission: pvpmanager.command
-  kit:
-    permission: pvpmanager.kits.*
 permissions:
   pvpmanager.join.teleport.bypass:
     description: Allows you to bypass automatic teleporting when joining the lobby.

@@ -1,14 +1,14 @@
 package com.ttaylorr.uhc.pvp;
 
-import com.google.common.base.Preconditions;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.ttaylorr.uhc.pvp.services.*;
 import com.ttaylorr.uhc.pvp.services.core.*;
-import com.ttaylorr.uhc.pvp.services.core.UHCUserManager;
 import com.ttaylorr.uhc.pvp.services.interfaces.PVPUtility;
 import com.ttaylorr.uhc.pvp.services.interfaces.SpawnChooser;
 import com.ttaylorr.uhc.pvp.util.*;
 import com.ttaylorr.uhc.pvp.util.serialization.SerializableLocation;
+import nl.dykam.dev.FileKitManager;
+import nl.dykam.dev.KitManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -16,12 +16,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,17 +29,10 @@ public class PVPManagerPlugin extends JavaPlugin {
     List<Persistent> persistencies;
     CommandMap subCommands;
     PlayerDataManager dataManager;
-    KitLoader kits;
     Listeners listeners;
-    private YamlConfiguration kitsConfig;
-    private File kitsFile;
 
     public static PVPManagerPlugin get() {
         return instance;
-    }
-
-    public YamlConfiguration getKitsConfig() {
-        return Preconditions.checkNotNull(this.kitsConfig, "Kit configuration is null!");
     }
 
     @Override
@@ -79,10 +69,8 @@ public class PVPManagerPlugin extends JavaPlugin {
     }
 
     private void initializeKits() {
-        kits = new KitLoader(getKitsConfig());
-        for(Command command : kits.getCommands()) {
-            subCommands.register("pvpmanager", command);
-        }
+        FileKitManager kitManager = new FileKitManager(getDataFolder().toPath().resolve("kits.yml").toFile());
+        Bukkit.getServicesManager().register(KitManager.class, kitManager, this, ServicePriority.Normal);
     }
 
     private void enableFeatures() {
@@ -115,11 +103,8 @@ public class PVPManagerPlugin extends JavaPlugin {
 
     private void initializeConfig() {
         getConfig().options().copyDefaults(true);
-        kitsFile = new File(this.getDataFolder(), "kits.yml");
-        kitsConfig = YamlConfiguration.loadConfiguration(kitsFile);
-
         saveConfig();
-        this.saveResource(new File("kits.yml").getPath(), false);
+        this.saveResource("kits.yml", false);
     }
 
     @Override
@@ -129,11 +114,6 @@ public class PVPManagerPlugin extends JavaPlugin {
 //                persistent.save();
 //            }
 //        }
-        try {
-            kitsConfig.save(kitsFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         super.saveConfig();
     }
 
@@ -163,10 +143,6 @@ public class PVPManagerPlugin extends JavaPlugin {
                 subCommands.register("pvpmanager", command);
             }
         }
-    }
-
-    public KitLoader getKits() {
-        return kits;
     }
 
     private class ReloadCommand extends PVPManagerCommand implements CommandExecutor {

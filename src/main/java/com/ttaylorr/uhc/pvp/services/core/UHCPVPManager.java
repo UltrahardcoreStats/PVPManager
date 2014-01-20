@@ -8,6 +8,8 @@ import com.ttaylorr.uhc.pvp.services.*;
 import com.ttaylorr.uhc.pvp.services.interfaces.PVPUtility;
 import com.ttaylorr.uhc.pvp.services.interfaces.SpawnChooser;
 import com.ttaylorr.uhc.pvp.util.*;
+import nl.dykam.dev.Kit;
+import nl.dykam.dev.KitAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -140,29 +142,29 @@ public class UHCPVPManager extends UHCGameModeBase implements PVPManager, Featur
                 dropIterator.remove();
         }
         drops.add(new Potion(PotionType.INSTANT_HEAL, 2).splash().toItemStack(1));
-        KitLoader.clear(event.getEntity().getInventory());
+        InventoryUtils.clear(event.getEntity().getInventory());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onPlayerRespawn(PlayerRespawnEvent event) {
         if(!isInGameMode(event.getPlayer()))
             return;
-        Kit kit = getPlugin().getKits().getKit("pvp_default");
+        Kit kit = KitAPI.getManager().get("pvp_default");
         if(null != kit)
             kit.apply(event.getPlayer(), true);
         else {
-            KitLoader.clear(event.getPlayer().getInventory());
+            InventoryUtils.clear(event.getPlayer().getInventory());
             getPlugin().getLogger().warning("Kit not found! pvp_default");
         }
         event.setRespawnLocation(spawnManager.getSpawn(event.getPlayer(), context));
     }
 
     private void respawn(Player player) {
-        Kit kit = getPlugin().getKits().getKit("pvp_default");
+        Kit kit = KitAPI.getManager().get("pvp_default");
         if(null != kit)
             kit.apply(player, true);
         else {
-            KitLoader.clear(player.getInventory());
+            InventoryUtils.clear(player.getInventory());
             getPlugin().getLogger().warning("Kit not found! pvp_default");
         }
         spawnManager.respawn(player, context);
