@@ -3,8 +3,6 @@ package com.ttaylorr.uhc.pvp.core.usermanager;
 import com.ttaylorr.uhc.pvp.core.gamemodes.GameMode;
 import com.ttaylorr.uhc.pvp.core.UserManager;
 import com.ttaylorr.uhc.pvp.util.Checker;
-import com.ttaylorr.uhc.pvp.util.Continuation;
-import com.ttaylorr.uhc.pvp.util.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -42,24 +40,12 @@ public class SwitchGameModeCommandExecutor implements CommandExecutor {
             warn(player, alreadyInMessage);
             return true;
         }
-        if(userData.gameMode != from) {
+        if(from != null && userData.gameMode != from) {
             failure(player, wrongCurrentGameModeMessage);
             return true;
         }
-        userData.transitioning = true;
-        userData.gameMode.exit(player, new Continuation() {
-            @Override
-            public void success() {
-                userData.transitioning = false;
-                to.enter(player);
-                userData.gameMode = to;
-            }
-
-            @Override
-            public void failure() {
-                userData.transitioning = false;
-            }
-        });
-        return false;
+        userManager.switchGameMode(player, to);
+        return true;
     }
+
 }

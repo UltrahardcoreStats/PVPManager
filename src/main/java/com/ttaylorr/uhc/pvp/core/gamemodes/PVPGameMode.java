@@ -39,7 +39,7 @@ public class PVPGameMode extends GameMode implements Listener, CommandListener {
 
 
     public PVPGameMode(PVPManagerPlugin plugin, Spector spector, SpawnManager spawnManager, CombatTagger combatTagger) {
-        super(plugin, spector);
+        super(plugin, spector, "pvp");
         this.spawnManager = spawnManager;
         this.combatTagger = combatTagger;
 

@@ -2,11 +2,14 @@ package com.ttaylorr.uhc.pvp;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.ttaylorr.uhc.pvp.core.*;
+import com.ttaylorr.uhc.pvp.core.gamemodes.AdminGameMode;
 import com.ttaylorr.uhc.pvp.core.gamemodes.LobbyGameMode;
 import com.ttaylorr.uhc.pvp.core.gamemodes.PVPGameMode;
+import com.ttaylorr.uhc.pvp.core.gamemodes.SpectatorGameMode;
 import com.ttaylorr.uhc.pvp.core.interfaces.SpawnChooser;
 import com.ttaylorr.uhc.pvp.util.*;
 import com.ttaylorr.uhc.pvp.util.serialization.SerializableLocation;
+import net.milkbowl.vault.permission.Permission;
 import nl.dykam.dev.FileKitManager;
 import nl.dykam.dev.KitManager;
 import nl.dykam.dev.spector.Spector;
@@ -19,6 +22,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -37,6 +41,7 @@ public class PVPManagerPlugin extends JavaPlugin {
     private Spector spectatorSpector;
     private Spector adminSpector;
     private UserManager userManager;
+    Permission permission;
 
     public static PVPManagerPlugin get() {
         return instance;
@@ -50,8 +55,20 @@ public class PVPManagerPlugin extends JavaPlugin {
     public void onEnable() {
         initSerializables();
         dataManager = new PlayerDataManager();
+        setupPermission();
         if(Bukkit.getWorld("uhc") != null)
             initialize();
+        else
+            Bukkit.getPluginManager().registerEvents(new WorldListener(this), this);
+    }
+
+    private boolean setupPermission() {
+        RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(Permission.class);
+        if (permissionProvider != null) {
+            permission = permissionProvider.getProvider();
+            return true;
+        }
+        return false;
     }
 
     private void initSerializables() {
@@ -112,10 +129,20 @@ public class PVPManagerPlugin extends JavaPlugin {
         // Depends on SpawnManager, PVPRestrictionManager and CombatTagger
         PVPGameMode pvpGameMode = new PVPGameMode(this, pvpSpector, spawnManager, combatTagger);
         registerDefault(pvpGameMode);
+
+        AdminGameMode adminGameMode = new AdminGameMode(this, adminSpector);
+        registerDefault(adminGameMode);
+        SpectatorGameMode spectatorGameMode = new SpectatorGameMode(this, adminSpector);
+        registerDefault(spectatorGameMode);
+
         // Depends on PVPManagerPlugin, LobbyGameMode
         userManager = new UserManager(this, lobbyMode, pvpGameMode);
         userManager.addTransition("join", lobbyMode, pvpGameMode, "You are already in PVP", "You can only join from the lobby");
         userManager.addTransition("quit", pvpGameMode, lobbyMode, "You are already in the lobby", "You can only quit when in PVP");
+        userManager.addTransition("admin-join", null, adminGameMode, "You are already in admin mode", "");
+        userManager.addTransition("admin-quit", adminGameMode, lobbyMode, "You are already in lobby mode", "You are not in admin mode");
+        userManager.addTransition("spec-join", lobbyMode, spectatorGameMode, "You are already in admin mode", "You can only join spectator mode from lobby");
+        userManager.addTransition("spec-quit", spectatorGameMode, lobbyMode, "You are already in the lobby", "You are not in spectator mode");
         registerDefault(userManager);
 
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
@@ -172,6 +199,10 @@ public class PVPManagerPlugin extends JavaPlugin {
 
     public boolean registerCommand(Command command) {
         return subCommands.register("pvpmanager", command);
+    }
+
+    public Permission getPermission() {
+        return permission;
     }
 
     private class ReloadCommand extends PVPManagerCommand implements CommandExecutor {

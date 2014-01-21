@@ -2,8 +2,10 @@ package com.ttaylorr.uhc.pvp.core;
 
 import com.ttaylorr.uhc.pvp.CommandListener;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
+import com.ttaylorr.uhc.pvp.core.gamemodes.AdminGameMode;
 import com.ttaylorr.uhc.pvp.core.gamemodes.GameMode;
 import com.ttaylorr.uhc.pvp.core.gamemodes.PVPGameMode;
+import com.ttaylorr.uhc.pvp.core.gamemodes.SpectatorGameMode;
 import com.ttaylorr.uhc.pvp.core.usermanager.SwitchGameModeCommandExecutor;
 import com.ttaylorr.uhc.pvp.util.*;
 import org.bukkit.Bukkit;
@@ -43,10 +45,14 @@ public class UserManager implements CommandListener {
                     if(!userData.isSubscribed()) {
                         Message.warn(player, "You are not in a gamemode. Please relog");
                     } else {
-                        Message.message(player, "You are in "  + (userData.gameMode instanceof PVPGameMode
-                                ? "PVP, to leave: " + ChatColor.UNDERLINE + "/pvp quit"
-                                : "the lobby, to join: " + ChatColor.UNDERLINE + "/pvp join"
-                        ));
+                        if (userData.gameMode instanceof PVPGameMode)
+                            Message.message(player, "You are in PVP, to leave: " + ChatColor.UNDERLINE + "/pvp quit");
+                        else if(userData.gameMode instanceof SpectatorGameMode)
+                            Message.message(player, "You are in spectator mode, to leave: " + ChatColor.UNDERLINE + "/pvp spec-quit");
+                        else if(userData.gameMode instanceof AdminGameMode)
+                            Message.message(player, "You are in admin mode, to leave: " + ChatColor.UNDERLINE + "/pvp admin-quit");
+                        else
+                            Message.message(player, "You are in the lobby, to join: " + ChatColor.UNDERLINE + "/pvp join");
                     }
                     return true;
                 }
@@ -55,6 +61,24 @@ public class UserManager implements CommandListener {
 
         for(Player player : Bukkit.getOnlinePlayers())
             subscribe(player);
+    }
+
+    public void switchGameMode(final Player player, final GameMode to) {
+        final UserData userData = getUserData(player);
+        userData.transitioning = true;
+        userData.gameMode.exit(player, new Continuation() {
+            @Override
+            public void success() {
+                userData.transitioning = false;
+                to.enter(player);
+                userData.gameMode = to;
+            }
+
+            @Override
+            public void failure() {
+                userData.transitioning = false;
+            }
+        });
     }
 
     public void subscribe(Player player) {

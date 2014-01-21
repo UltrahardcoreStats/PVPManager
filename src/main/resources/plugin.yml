@@ -2,7 +2,7 @@ name: ${project.name}
 version: ${project.version}
 description: ${project.description}
 main: ${plugin.mainClass}
-softdepend: [WorldGuard,Multiverse-Core]
+softdepend: [WorldGuard,Multiverse-Core,Vault]
 depend: [Kitter,Spector]
 commands:
   pvp:

@@ -2,6 +2,7 @@ package com.ttaylorr.uhc.pvp.core.gamemodes;
 
 import com.ttaylorr.uhc.pvp.CommandListener;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
+import com.ttaylorr.uhc.pvp.core.gamemodes.GameMode;
 import com.ttaylorr.uhc.pvp.util.*;
 import nl.dykam.dev.Kit;
 import nl.dykam.dev.KitAPI;
@@ -20,13 +21,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.util.Vector;
 
-public class LobbyGameMode extends GameMode implements Listener, CommandListener {
+public class SpectatorGameMode extends GameMode implements Listener, CommandListener {
     private Command[] commands;
 
-    public LobbyGameMode(PVPManagerPlugin plugin, Spector spector) {
-        super(plugin, spector, "lobby");
+    public SpectatorGameMode(PVPManagerPlugin plugin, Spector spector) {
+        super(plugin, spector, "spectator");
         commands = new Command[] {
-            new SetSpawnCommand(),
+                new SetSpawnCommand(),
         };
         Bukkit.getPluginManager().registerEvents(this, getPlugin());
     }
@@ -35,23 +36,25 @@ public class LobbyGameMode extends GameMode implements Listener, CommandListener
     protected void onEnter(Player p) {
         p.teleport(getSpawn());
         p.setVelocity(new Vector());
-        Kit kit = KitAPI.getManager().get("lobby");
+        Kit kit = KitAPI.getManager().get("spectator");
         if(null != kit)
             kit.apply(p, true);
         else {
             InventoryUtils.clear(p.getInventory());
-            getPlugin().getLogger().warning("Kit not found! lobby");
+            getPlugin().getLogger().warning("Kit not found! spectator");
         }
+        Message.success(p, "You joined spectator mode");
     }
 
     @Override
     protected void onExit(Player p, Continuation continuation) {
+        immediateExit(p);
         continuation.success();
     }
 
     @Override
     protected void onImmediateExit(Player p) {
-
+        Message.success(p, "You left spectator mode");
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -59,12 +62,12 @@ public class LobbyGameMode extends GameMode implements Listener, CommandListener
         if(!isInGameMode(event.getPlayer()))
             return;
         event.setRespawnLocation(getSpawn());
-        Kit kit = KitAPI.getManager().get("lobby");
+        Kit kit = KitAPI.getManager().get("spectator");
         if(null != kit)
             kit.apply(event.getPlayer(), true);
         else {
             InventoryUtils.clear(event.getPlayer().getInventory());
-            getPlugin().getLogger().warning("Kit not found! lobby");
+            getPlugin().getLogger().warning("Kit not found! spectator");
         }
     }
 
@@ -79,7 +82,7 @@ public class LobbyGameMode extends GameMode implements Listener, CommandListener
 
     private ConfigurationSection getConfig() {
         FileConfiguration config = getPlugin().getConfig();
-        return Config.getOrCreateSection(config, "lobby");
+        return Config.getOrCreateSection(config, "spectator");
     }
 
     @Override
@@ -89,7 +92,7 @@ public class LobbyGameMode extends GameMode implements Listener, CommandListener
 
     private class SetSpawnCommand extends PVPManagerCommand implements CommandExecutor {
         public SetSpawnCommand() {
-            super(null, "lobby:setspawn");
+            super(null, "spectator:setspawn");
             setExecutor(this);
         }
 
