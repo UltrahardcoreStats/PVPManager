@@ -14,9 +14,11 @@ import nl.dykam.dev.FileKitManager;
 import nl.dykam.dev.KitManager;
 import nl.dykam.dev.spector.Spector;
 import nl.dykam.dev.spector.SpectorAPI;
+import nl.dykam.dev.spector.SpectorSettings;
 import nl.dykam.dev.spector.SpectorShield;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -56,7 +58,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         initSerializables();
         dataManager = new PlayerDataManager();
         setupPermission();
-        if(Bukkit.getWorld("uhc") != null)
+        if(true || Bukkit.getWorld("uhc") != null)
             initialize();
         else
             Bukkit.getPluginManager().registerEvents(new WorldListener(this), this);
@@ -98,18 +100,22 @@ public class PVPManagerPlugin extends JavaPlugin {
         lobbySpector.show(pvpSpector);
         lobbySpector.show(spectatorSpector);
         lobbySpector.setShield(SpectorShield.noShield());
+        lobbySpector.setSettings(SpectorSettings.spectator().canFly(false));
 
         pvpSpector.hide(lobbySpector);
         pvpSpector.hide(spectatorSpector);
         pvpSpector.setShield(SpectorShield.noShield());
+        pvpSpector.setSettings(SpectorSettings.survival().walkSpeed(0.24f));
 
         spectatorSpector.show(lobbySpector);
         spectatorSpector.show(pvpSpector);
         spectatorSpector.setShield(SpectorShield.ghost());
+        spectatorSpector.setSettings(SpectorSettings.spectator());
 
         adminSpector.showAll();
         adminSpector.hideForAll();
         adminSpector.setShield(SpectorShield.noShield().canPickup(false));
+        adminSpector.setSettings(SpectorSettings.spectator().gameMode(GameMode.CREATIVE));
     }
 
     private void initializeKits() {
@@ -132,7 +138,7 @@ public class PVPManagerPlugin extends JavaPlugin {
 
         AdminGameMode adminGameMode = new AdminGameMode(this, adminSpector);
         registerDefault(adminGameMode);
-        SpectatorGameMode spectatorGameMode = new SpectatorGameMode(this, adminSpector);
+        SpectatorGameMode spectatorGameMode = new SpectatorGameMode(this, spectatorSpector);
         registerDefault(spectatorGameMode);
 
         // Depends on PVPManagerPlugin, LobbyGameMode
@@ -141,7 +147,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         userManager.addTransition("quit", pvpGameMode, lobbyMode, "You are already in the lobby", "You can only quit when in PVP");
         userManager.addTransition("admin-join", null, adminGameMode, "You are already in admin mode", "");
         userManager.addTransition("admin-quit", adminGameMode, lobbyMode, "You are already in lobby mode", "You are not in admin mode");
-        userManager.addTransition("spec-join", lobbyMode, spectatorGameMode, "You are already in admin mode", "You can only join spectator mode from lobby");
+        userManager.addTransition("spec-join", lobbyMode, spectatorGameMode, "You are already in spectator mode", "You can only join spectator mode from lobby");
         userManager.addTransition("spec-quit", spectatorGameMode, lobbyMode, "You are already in the lobby", "You are not in spectator mode");
         registerDefault(userManager);
 
