@@ -8,6 +8,7 @@ import com.ttaylorr.uhc.pvp.core.gamemodes.PVPGameMode;
 import com.ttaylorr.uhc.pvp.core.gamemodes.SpectatorGameMode;
 import com.ttaylorr.uhc.pvp.core.usermanager.SwitchGameModeCommandExecutor;
 import com.ttaylorr.uhc.pvp.util.*;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -15,8 +16,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class UserManager implements CommandListener {
@@ -82,12 +84,29 @@ public class UserManager implements CommandListener {
     }
 
     public void subscribe(Player player) {
+        Permission permission = plugin.getPermission();
+        if(permission != null) {
+            for (GameMode gameMode : gameModes) {
+                permission.playerRemoveGroup(player, gameMode.getPermissionGroup());
+            }
+
+        }
         defaultGameMode.enter(player);
     }
 
     public void unsubscribe(Player player) {
         UserData userData = getUserData(player);
+        if(userData == null || userData.gameMode == null)
+            return;
+        userData.gameMode.getSpector().unAssignTo(player);
         userData.gameMode.exit(player, Continuation.empty());
+    }
+
+    public void unsubscribeAll() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            unsubscribe(player);
+        }
+
     }
 
     public UserData getUserData(Player player) {
@@ -107,6 +126,10 @@ public class UserManager implements CommandListener {
 
     public PVPManagerPlugin getPlugin() {
         return plugin;
+    }
+
+    public Iterable<GameMode> getGameModes() {
+        return gameModes;
     }
 
     public static class UserData {

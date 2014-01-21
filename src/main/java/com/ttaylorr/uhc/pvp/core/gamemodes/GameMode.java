@@ -15,6 +15,7 @@ public abstract class GameMode {
     private PVPManagerPlugin plugin;
     private Spector spector;
     private String name;
+    private String permissionGroup;
 
     protected abstract void onEnter(Player p);
 
@@ -32,10 +33,15 @@ public abstract class GameMode {
      */
     protected abstract void onImmediateExit(Player p);
 
+    public String getPermissionGroup() {
+        return permissionGroup;
+    }
+
     protected GameMode(PVPManagerPlugin plugin, Spector spector, String name) {
         this.plugin = plugin;
         this.spector = spector;
         this.name = name;
+
         players = new HashSet<>();
     }
 
@@ -43,8 +49,10 @@ public abstract class GameMode {
         plugin.getDataManager().get(player, UserManager.UserData.class).gameMode = this;
         players.add(player);
         Permission permission = plugin.getPermission();
-        if(permission != null)
-            permission.playerAddGroup(player, "PVPManager-" + name);
+        if(permission != null) {
+            permissionGroup = "PVPManager-" + name;
+            permission.playerAddGroup(player, permissionGroup);
+        }
         onEnter(player);
         spector.assignTo(player);
     }
@@ -61,6 +69,7 @@ public abstract class GameMode {
 
     public void immediateExit(Player p) {
         remove(p);
+        onImmediateExit(p);
     }
 
     private void remove(Player p) {
@@ -80,5 +89,13 @@ public abstract class GameMode {
 
     public PVPManagerPlugin getPlugin() {
         return plugin;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Spector getSpector() {
+        return spector;
     }
 }

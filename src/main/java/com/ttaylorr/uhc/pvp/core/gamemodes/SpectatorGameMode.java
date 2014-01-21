@@ -2,7 +2,6 @@ package com.ttaylorr.uhc.pvp.core.gamemodes;
 
 import com.ttaylorr.uhc.pvp.CommandListener;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
-import com.ttaylorr.uhc.pvp.core.gamemodes.GameMode;
 import com.ttaylorr.uhc.pvp.util.*;
 import nl.dykam.dev.Kit;
 import nl.dykam.dev.KitAPI;
@@ -44,6 +43,7 @@ public class SpectatorGameMode extends GameMode implements Listener, CommandList
             getPlugin().getLogger().warning("Kit not found! spectator");
         }
         Message.success(p, "You joined spectator mode");
+        Message.Broadcast.message(p.getDisplayName() + " became spectator");
     }
 
     @Override
@@ -55,6 +55,7 @@ public class SpectatorGameMode extends GameMode implements Listener, CommandList
     @Override
     protected void onImmediateExit(Player p) {
         Message.success(p, "You left spectator mode");
+        Message.Broadcast.message(p.getDisplayName() + " quit spectator");
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

@@ -7,6 +7,8 @@ depend: [Kitter,Spector]
 commands:
   pvp:
     permission: pvpmanager.command
+  list:
+    permission: pvpmanager.command.list
 permissions:
   pvpmanager.join.teleport.bypass:
     description: Allows you to bypass automatic teleporting when joining the lobby.

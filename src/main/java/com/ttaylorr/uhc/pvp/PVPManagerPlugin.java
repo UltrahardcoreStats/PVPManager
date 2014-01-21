@@ -1,7 +1,12 @@
 package com.ttaylorr.uhc.pvp;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.ttaylorr.uhc.pvp.core.*;
+import com.ttaylorr.uhc.pvp.core.CombatTagger;
+import com.ttaylorr.uhc.pvp.core.MagicWall;
+import com.ttaylorr.uhc.pvp.core.SpawnManager;
+import com.ttaylorr.uhc.pvp.core.UserManager;
 import com.ttaylorr.uhc.pvp.core.gamemodes.AdminGameMode;
 import com.ttaylorr.uhc.pvp.core.gamemodes.LobbyGameMode;
 import com.ttaylorr.uhc.pvp.core.gamemodes.PVPGameMode;
@@ -12,18 +17,14 @@ import com.ttaylorr.uhc.pvp.util.serialization.SerializableLocation;
 import net.milkbowl.vault.permission.Permission;
 import nl.dykam.dev.FileKitManager;
 import nl.dykam.dev.KitManager;
-import nl.dykam.dev.spector.Spector;
-import nl.dykam.dev.spector.SpectorAPI;
-import nl.dykam.dev.spector.SpectorSettings;
-import nl.dykam.dev.spector.SpectorShield;
+import nl.dykam.dev.spector.*;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandMap;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.*;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -51,6 +52,7 @@ public class PVPManagerPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        userManager.unsubscribeAll();
     }
 
     @Override
@@ -58,7 +60,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         initSerializables();
         dataManager = new PlayerDataManager();
         setupPermission();
-        if(Bukkit.getWorld("uhc") != null)
+        if(true || Bukkit.getWorld("uhc") != null)
             initialize();
         else
             Bukkit.getPluginManager().registerEvents(new WorldListener(this), this);
@@ -89,6 +91,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(listeners, this);
 
         registerCommand(new ReloadCommand());
+        registerCommand(new ListCommand(), true);
     }
 
     private void initializeSpector() {
@@ -111,6 +114,10 @@ public class PVPManagerPlugin extends JavaPlugin {
         spectatorSpector.show(pvpSpector);
         spectatorSpector.setShield(SpectorShield.ghost().canChat(true));
         spectatorSpector.setSettings(SpectorSettings.spectator());
+        spectatorSpector.addComponent(new TeamComponent(
+                Bukkit.getScoreboardManager().getMainScoreboard(),
+                ChatColor.BOLD + "◊ " + ChatColor.GRAY,
+                TeamMode.Ghost));
 
         adminSpector.showAll();
         adminSpector.hideForAll();
@@ -204,6 +211,16 @@ public class PVPManagerPlugin extends JavaPlugin {
     }
 
     public boolean registerCommand(Command command) {
+        return registerCommand(command, false);
+    }
+
+    public boolean registerCommand(Command command, boolean root) {
+        if(root && command instanceof PVPManagerCommand) {
+            PVPManagerCommand pvpManagerCommand = (PVPManagerCommand) command;
+            PluginCommand pluginCommand = getCommand(command.getName());
+            if(pluginCommand != null)
+                pluginCommand.setExecutor(pvpManagerCommand.getExecutor());
+        }
         return subCommands.register("pvpmanager", command);
     }
 
@@ -224,6 +241,36 @@ public class PVPManagerPlugin extends JavaPlugin {
             saveConfig();
             Message.success(commandSender, "Config reloaded");
             return true;
+        }
+    }
+
+    private class ListCommand extends PVPManagerCommand implements CommandExecutor {
+        private ListCommand() {
+            super(null, "list");
+            setExecutor(this);
+        }
+
+        @Override
+        public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+            StringBuilder sb = new StringBuilder();
+            for (com.ttaylorr.uhc.pvp.core.gamemodes.GameMode gameMode : userManager.getGameModes()) {
+                sb.append(ChatColor.GOLD).append(capitalize(gameMode.getName())).append(": ").append(ChatColor.RESET);
+                sb.append(StringUtils.join(Iterables.transform(gameMode.getPlayers(), new Function<Player, Object>() {
+                    @Override
+                    public Object apply(Player player) {
+                        return player.getDisplayName();
+                    }
+                }).iterator(), ", "));
+                sb.append("\n");
+            }
+
+            commandSender.sendMessage(sb.toString());
+
+            return true;
+        }
+
+        String capitalize(String name) {
+            return Character.toUpperCase(name.charAt(0)) + name.substring(1);
         }
     }
 }
