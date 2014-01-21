@@ -42,11 +42,11 @@ public abstract class GameMode {
     public void enter(Player player) {
         plugin.getDataManager().get(player, UserManager.UserData.class).gameMode = this;
         players.add(player);
-        spector.assignTo(player);
         Permission permission = plugin.getPermission();
         if(permission != null)
             permission.playerAddGroup(player, "PVPManager-" + name);
         onEnter(player);
+        spector.assignTo(player);
     }
 
     public void exit(final Player player, final Continuation continuation) {
