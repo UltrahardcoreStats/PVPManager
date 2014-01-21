@@ -58,7 +58,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         initSerializables();
         dataManager = new PlayerDataManager();
         setupPermission();
-        if(true || Bukkit.getWorld("uhc") != null)
+        if(Bukkit.getWorld("uhc") != null)
             initialize();
         else
             Bukkit.getPluginManager().registerEvents(new WorldListener(this), this);
@@ -109,7 +109,7 @@ public class PVPManagerPlugin extends JavaPlugin {
 
         spectatorSpector.show(lobbySpector);
         spectatorSpector.show(pvpSpector);
-        spectatorSpector.setShield(SpectorShield.ghost());
+        spectatorSpector.setShield(SpectorShield.ghost().canChat(true));
         spectatorSpector.setSettings(SpectorSettings.spectator());
 
         adminSpector.showAll();
