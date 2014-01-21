@@ -57,14 +57,6 @@ public class UserManager implements CommandListener {
             subscribe(player);
     }
 
-    public void onDisable() {
-        for(Player player : Bukkit.getOnlinePlayers()) {
-            UserData userData = getUserData(player);
-            if(userData.isSubscribed())
-                userData.gameMode.exit(player, Continuation.empty());
-        }
-    }
-
     public void subscribe(Player player) {
         defaultGameMode.enter(player);
     }
@@ -79,7 +71,7 @@ public class UserManager implements CommandListener {
     }
 
     public void addTransition(String commandName, GameMode from, GameMode to, String alreadyInMessage, String wrongCurrentGameModeMessage) {
-        SwitchGameModeCommandExecutor executor = new SwitchGameModeCommandExecutor(this, alreadyInMessage, wrongCurrentGameModeMessage, to, from);
+        SwitchGameModeCommandExecutor executor = new SwitchGameModeCommandExecutor(this, alreadyInMessage, wrongCurrentGameModeMessage, from, to);
         PVPManagerCommand command = new PVPManagerCommand(executor, commandName);
         plugin.registerCommand(command);
     }
