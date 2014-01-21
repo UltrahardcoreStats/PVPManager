@@ -20,11 +20,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.util.Vector;
 
-public class LobbyMode extends GameMode implements Listener, CommandListener {
+public class LobbyGameMode extends GameMode implements Listener, CommandListener {
     private Command[] commands;
 
-    public LobbyMode(PVPManagerPlugin plugin, Spector lobbySpector) {
-        super(plugin);
+    public LobbyGameMode(PVPManagerPlugin plugin, Spector spector) {
+        super(plugin, spector);
         commands = new Command[] {
             new SetSpawnCommand(),
         };
@@ -45,16 +45,6 @@ public class LobbyMode extends GameMode implements Listener, CommandListener {
         else {
             InventoryUtils.clear(p.getInventory());
             getPlugin().getLogger().warning("Kit not found! lobby   ");
-        }
-        for(Player other : Bukkit.getOnlinePlayers()) {
-            if(other.hasMetadata("vanished") && other.getMetadata("vanished").get(0).asBoolean())
-                continue;
-
-            p.showPlayer(other);
-            if(isInGameMode(other))
-                other.showPlayer(p);
-            else
-                other.hidePlayer(p);
         }
     }
 

@@ -1,7 +1,9 @@
 package com.ttaylorr.uhc.pvp.core.gamemodes;
 
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
+import com.ttaylorr.uhc.pvp.core.UserManager;
 import com.ttaylorr.uhc.pvp.util.Continuation;
+import nl.dykam.dev.spector.Spector;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -10,6 +12,7 @@ import java.util.Set;
 public abstract class GameMode {
     private Set<Player> players;
     private PVPManagerPlugin plugin;
+    private Spector spector;
 
     protected abstract void onEnter(Player p);
 
@@ -27,14 +30,17 @@ public abstract class GameMode {
      */
     protected abstract void onImmediateExit(Player p);
 
-    protected GameMode(PVPManagerPlugin plugin) {
+    protected GameMode(PVPManagerPlugin plugin, Spector spector) {
         this.plugin = plugin;
+        this.spector = spector;
         players = new HashSet<>();
     }
 
     public void enter(Player player) {
+        plugin.getDataManager().get(player, UserManager.UserData.class).gameMode = this;
         onEnter(player);
         players.add(player);
+        spector.assignTo(player);
     }
 
     public void exit(final Player player, final Continuation continuation) {

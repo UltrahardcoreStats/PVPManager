@@ -10,16 +10,21 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import static com.ttaylorr.uhc.pvp.util.Message.failure;
 import static com.ttaylorr.uhc.pvp.util.Message.warn;
 
 public class SwitchGameModeCommandExecutor implements CommandExecutor {
     private String alreadyInMessage;
     private UserManager userManager;
     private GameMode to;
+    private String wrongCurrentGameModeMessage;
+    private GameMode from;
 
-    public SwitchGameModeCommandExecutor(UserManager userManager, String alreadyInMessage, GameMode to) {
+    public SwitchGameModeCommandExecutor(UserManager userManager, String alreadyInMessage, String wrongCurrentGameModeMessage, GameMode from, GameMode to) {
         this.userManager = userManager;
         this.alreadyInMessage = alreadyInMessage;
+        this.wrongCurrentGameModeMessage = wrongCurrentGameModeMessage;
+        this.from = from;
         this.to = to;
     }
 
@@ -30,11 +35,15 @@ public class SwitchGameModeCommandExecutor implements CommandExecutor {
         final Player player = (Player) commandSender;
         final UserManager.UserData userData = userManager.getUserData(player);
         if(userData.transitioning) {
-            Message.warn(player, "You are already switching game mode!");
+            warn(player, "You are already switching game mode!");
             return true;
         }
         if(userData.gameMode == to) {
             warn(player, alreadyInMessage);
+            return true;
+        }
+        if(userData.gameMode != from) {
+            failure(player, wrongCurrentGameModeMessage);
             return true;
         }
         userData.transitioning = true;

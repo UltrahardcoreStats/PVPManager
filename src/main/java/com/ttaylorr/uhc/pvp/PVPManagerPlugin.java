@@ -2,7 +2,7 @@ package com.ttaylorr.uhc.pvp;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.ttaylorr.uhc.pvp.core.*;
-import com.ttaylorr.uhc.pvp.core.gamemodes.LobbyMode;
+import com.ttaylorr.uhc.pvp.core.gamemodes.LobbyGameMode;
 import com.ttaylorr.uhc.pvp.core.gamemodes.PVPGameMode;
 import com.ttaylorr.uhc.pvp.core.interfaces.SpawnChooser;
 import com.ttaylorr.uhc.pvp.util.*;
@@ -69,7 +69,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         listeners = new Listeners(this, userManager);
         Bukkit.getPluginManager().registerEvents(listeners, this);
 
-        subCommands.register("pvpmanager", new ReloadCommand());
+        registerCommand(new ReloadCommand());
     }
 
     private void initializeSpector() {
@@ -105,15 +105,17 @@ public class PVPManagerPlugin extends JavaPlugin {
         subCommands = new PVPManagerCommandMap();
         CombatTagger combatTagger = new CombatTagger();
         registerDefault(combatTagger);
-        LobbyMode lobbyMode = new LobbyMode(this, lobbySpector);
+        LobbyGameMode lobbyMode = new LobbyGameMode(this, lobbySpector);
         registerDefault(lobbyMode);
         SpawnManager spawnManager = new SpawnManager(SpawnChooser.far());
         registerDefault(spawnManager);
         // Depends on SpawnManager, PVPRestrictionManager and CombatTagger
         PVPGameMode pvpGameMode = new PVPGameMode(this, pvpSpector, spawnManager, combatTagger);
         registerDefault(pvpGameMode);
-        // Depends on PVPManagerPlugin, LobbyMode
+        // Depends on PVPManagerPlugin, LobbyGameMode
         userManager = new UserManager(this, pvpGameMode, lobbyMode);
+        userManager.addTransition("join", lobbyMode, pvpGameMode, "You are already in PVP", "You can only join from the lobby");
+        userManager.addTransition("quit", pvpGameMode, lobbyMode, "You are already in the lobby", "You can only quit when in PVP");
         registerDefault(userManager);
 
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
@@ -163,9 +165,13 @@ public class PVPManagerPlugin extends JavaPlugin {
         if(service instanceof CommandListener) {
             CommandListener commandListener = (CommandListener)service;
             for(Command command : commandListener.getCommands()) {
-                subCommands.register("pvpmanager", command);
+                registerCommand(command);
             }
         }
+    }
+
+    public boolean registerCommand(Command command) {
+        return subCommands.register("pvpmanager", command);
     }
 
     private class ReloadCommand extends PVPManagerCommand implements CommandExecutor {

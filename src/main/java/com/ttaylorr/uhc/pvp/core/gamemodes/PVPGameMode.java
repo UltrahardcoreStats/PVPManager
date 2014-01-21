@@ -32,16 +32,14 @@ import java.util.Map;
 
 public class PVPGameMode extends GameMode implements Listener, CommandListener {
     private final SpawnChooser.Context context;
-    private final Spector pvpSpector;
     SpawnManager spawnManager;
     CombatTagger combatTagger;
     Map<Player, Continuation> exitters;
     Command[] commands;
 
 
-    public PVPGameMode(PVPManagerPlugin plugin, Spector pvpSpector, SpawnManager spawnManager, CombatTagger combatTagger) {
-        super(plugin);
-        this.pvpSpector = pvpSpector;
+    public PVPGameMode(PVPManagerPlugin plugin, Spector spector, SpawnManager spawnManager, CombatTagger combatTagger) {
+        super(plugin, spector);
         this.spawnManager = spawnManager;
         this.combatTagger = combatTagger;
 
@@ -59,18 +57,6 @@ public class PVPGameMode extends GameMode implements Listener, CommandListener {
     protected void onEnter(Player p) {
         respawn(p);
         Message.Broadcast.message(p.getDisplayName() + " joined the arena!");
-        for(Player other : Bukkit.getOnlinePlayers()) {
-            if(other.hasMetadata("vanished") && other.getMetadata("vanished").get(0).asBoolean())
-                continue;
-
-            if(isInGameMode(other)) {
-                p.showPlayer(other);
-                other.showPlayer(p);
-            } else {
-                p.hidePlayer(other);
-                other.showPlayer(p);
-            }
-        }
     }
 
     @Override
@@ -217,6 +203,5 @@ public class PVPGameMode extends GameMode implements Listener, CommandListener {
             respawn(player);
             return true;
         }
-
     }
 }
