@@ -50,7 +50,7 @@ public class PVPManagerPlugin extends JavaPlugin {
     public void onEnable() {
         initSerializables();
         dataManager = new PlayerDataManager();
-//        if(Bukkit.getWorld("uhc") != null)
+        if(Bukkit.getWorld("uhc") != null)
             initialize();
     }
 
@@ -113,7 +113,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         PVPGameMode pvpGameMode = new PVPGameMode(this, pvpSpector, spawnManager, combatTagger);
         registerDefault(pvpGameMode);
         // Depends on PVPManagerPlugin, LobbyGameMode
-        userManager = new UserManager(this, pvpGameMode, lobbyMode);
+        userManager = new UserManager(this, lobbyMode, pvpGameMode);
         userManager.addTransition("join", lobbyMode, pvpGameMode, "You are already in PVP", "You can only join from the lobby");
         userManager.addTransition("quit", pvpGameMode, lobbyMode, "You are already in the lobby", "You can only quit when in PVP");
         registerDefault(userManager);

@@ -13,6 +13,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Array;
+import java.util.*;
+
 
 public class UserManager implements CommandListener {
     private final PlayerDataManager dataManager;
@@ -20,12 +23,14 @@ public class UserManager implements CommandListener {
     private final Command[] commands;
     private PVPManagerPlugin plugin;
     private GameMode defaultGameMode;
-    private GameMode[] gameModes;
+    private List<GameMode> gameModes;
 
-    public UserManager(PVPManagerPlugin plugin, GameMode defaultGameMode, GameMode... gameModes) {
+    public UserManager(PVPManagerPlugin plugin, GameMode defaultGameMode, GameMode... otherGameModes) {
         this.plugin = plugin;
         this.defaultGameMode = defaultGameMode;
-        this.gameModes = gameModes;
+        this.gameModes = new ArrayList<>();
+        gameModes.add(defaultGameMode);
+        gameModes.addAll(Arrays.asList(otherGameModes));
         dataManager = getPlugin().getDataManager();
         commands = new Command[]{
             new PVPManagerCommand(new CommandExecutor() {
