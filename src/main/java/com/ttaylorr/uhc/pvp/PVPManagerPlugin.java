@@ -261,7 +261,7 @@ public class PVPManagerPlugin extends JavaPlugin {
                         .append(capitalize(gameMode.getName()))
                         .append(ChatColor.GRAY + "◆" + ChatColor.GOLD)
                         .append(players.size())
-                        .append("" + ChatColor.GOLD + ": ");
+                        .append("" + ChatColor.GOLD + ": " + ChatColor.RESET);
                 if(players.isEmpty()) {
                     sb.append("" + ChatColor.RESET + ChatColor.STRIKETHROUGH).append("    ");
                 } else {
