@@ -13,13 +13,13 @@ public class Message {
         sender.sendMessage(ChatColor.AQUA + "[PVP]" + ChatColor.GRAY + " - " + ChatColor.RESET + colorize(color, message));
     }
     public static void warn(CommandSender sender, String message) {
-        message(sender, ChatColor.GOLD, message);
+        message(sender, ChatColor.GOLD, "⚠ " + ChatColor.RESET + message);
     }
     public static void failure(CommandSender sender, String message) {
-        message(sender, ChatColor.RED, message);
+        message(sender, ChatColor.RED, ChatColor.BOLD + "✗ " + ChatColor.RESET + message);
     }
     public static void success(CommandSender sender, String message) {
-        message(sender, ChatColor.DARK_GREEN, message);
+        message(sender, ChatColor.GREEN, ChatColor.BOLD + "✔ " + ChatColor.RESET + message);
     }
     private static String colorize(ChatColor color, String message) {
         return color + message.replace(ChatColor.RESET.toString(), color.toString());
@@ -34,13 +34,13 @@ public class Message {
             Bukkit.broadcastMessage(ChatColor.AQUA + "[PVP]" + ChatColor.GRAY + " - " + ChatColor.RESET + colorize(color, message));
         }
         public static void warn(String message) {
-            message(ChatColor.GOLD, message);
+            message(ChatColor.GOLD, "⚠ " + ChatColor.RESET + message);
         }
         public static void failure(String message) {
-            message(ChatColor.RED, message);
+            message(ChatColor.RED, ChatColor.BOLD + "✗ " + ChatColor.RESET + message);
         }
         public static void success(String message) {
-            message(ChatColor.DARK_GREEN, message);
+            message(ChatColor.DARK_GREEN, ChatColor.BOLD + "✔ " + ChatColor.RESET + message);
         }
     }
 }
