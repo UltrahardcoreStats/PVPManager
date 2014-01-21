@@ -87,9 +87,9 @@ public class UserManager implements CommandListener {
         Permission permission = plugin.getPermission();
         if(permission != null) {
             for (GameMode gameMode : gameModes) {
-                permission.playerRemoveGroup(player, gameMode.getPermissionGroup());
+                if(permission.playerInGroup(player, gameMode.getPermissionGroup()))
+                    permission.playerRemoveGroup(player, gameMode.getPermissionGroup());
             }
-
         }
         defaultGameMode.enter(player);
     }

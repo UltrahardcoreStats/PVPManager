@@ -16,7 +16,7 @@ public class Listeners implements Listener {
         this.userManager = userManager;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     private void onPlayerJoin(PlayerJoinEvent event) {
         userManager.subscribe(event.getPlayer());
     }
