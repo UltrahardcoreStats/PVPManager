@@ -31,6 +31,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class PVPManagerPlugin extends JavaPlugin {
 
@@ -149,7 +150,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         registerDefault(spectatorGameMode);
 
         // Depends on PVPManagerPlugin, LobbyGameMode
-        userManager = new UserManager(this, lobbyMode, pvpGameMode);
+        userManager = new UserManager(this, lobbyMode, pvpGameMode, spectatorGameMode);
         userManager.addTransition("join", lobbyMode, pvpGameMode, "You are already in PVP", "You can only join from the lobby");
         userManager.addTransition("quit", pvpGameMode, lobbyMode, "You are already in the lobby", "You can only quit when in PVP");
         userManager.addTransition("admin-join", null, adminGameMode, "You are already in admin mode", "");
@@ -254,13 +255,23 @@ public class PVPManagerPlugin extends JavaPlugin {
         public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
             StringBuilder sb = new StringBuilder();
             for (com.ttaylorr.uhc.pvp.core.gamemodes.GameMode gameMode : userManager.getGameModes()) {
-                sb.append(ChatColor.GOLD).append(capitalize(gameMode.getName())).append(": ").append(ChatColor.RESET);
-                sb.append(StringUtils.join(Iterables.transform(gameMode.getPlayers(), new Function<Player, Object>() {
-                    @Override
-                    public Object apply(Player player) {
-                        return player.getDisplayName();
-                    }
-                }).iterator(), ", "));
+                Set<Player> players = gameMode.getPlayers();
+                sb
+                        .append(ChatColor.GOLD)
+                        .append(capitalize(gameMode.getName()))
+                        .append(ChatColor.GRAY + "◆" + ChatColor.GOLD)
+                        .append(players.size())
+                        .append("" + ChatColor.GOLD + ": ");
+                if(players.isEmpty()) {
+                    sb.append("" + ChatColor.RESET + ChatColor.STRIKETHROUGH).append("    ");
+                } else {
+                    sb.append(StringUtils.join(Iterables.transform(players, new Function<Player, Object>() {
+                        @Override
+                        public Object apply(Player player) {
+                            return player.getDisplayName();
+                        }
+                    }).iterator(), ChatColor.RESET + ", "));
+                }
                 sb.append("\n");
             }
 

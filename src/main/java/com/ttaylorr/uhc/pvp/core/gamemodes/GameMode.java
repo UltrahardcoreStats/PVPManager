@@ -7,6 +7,7 @@ import net.milkbowl.vault.permission.Permission;
 import nl.dykam.dev.spector.Spector;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -83,8 +84,8 @@ public abstract class GameMode {
         return players.contains(p);
     }
 
-    public Iterable<Player> getPlayers() {
-        return players;
+    public Set<Player> getPlayers() {
+        return Collections.unmodifiableSet(players);
     }
 
     public PVPManagerPlugin getPlugin() {

@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -99,14 +100,13 @@ public class UserManager implements CommandListener {
         if(userData == null || userData.gameMode == null)
             return;
         userData.gameMode.getSpector().unAssignTo(player);
-        userData.gameMode.exit(player, Continuation.empty());
+        userData.gameMode.immediateExit(player);
     }
 
     public void unsubscribeAll() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             unsubscribe(player);
         }
-
     }
 
     public UserData getUserData(Player player) {
@@ -128,8 +128,8 @@ public class UserManager implements CommandListener {
         return plugin;
     }
 
-    public Iterable<GameMode> getGameModes() {
-        return gameModes;
+    public List<GameMode> getGameModes() {
+        return Collections.unmodifiableList(gameModes);
     }
 
     public static class UserData {
