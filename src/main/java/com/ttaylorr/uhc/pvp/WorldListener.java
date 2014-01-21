@@ -13,7 +13,7 @@ public class WorldListener implements Listener {
     // Postpone loading until all worlds are loaded
     @EventHandler
     private void onWorldLoad(WorldLoadEvent event) {
-        if(event.getWorld().getName().equals("uhc")) {
+        if(event.getWorld().getName().equals(plugin.getConfig().getString("world"))) {
             plugin.initialize();
         }
     }

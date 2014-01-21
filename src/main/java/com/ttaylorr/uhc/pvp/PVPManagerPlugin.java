@@ -60,7 +60,8 @@ public class PVPManagerPlugin extends JavaPlugin {
         initSerializables();
         dataManager = new PlayerDataManager();
         setupPermission();
-        if(true || Bukkit.getWorld("uhc") != null)
+        initializeConfig();
+        if(Bukkit.getWorld(getConfig().getString("world")) != null)
             initialize();
         else
             Bukkit.getPluginManager().registerEvents(new WorldListener(this), this);
@@ -81,7 +82,6 @@ public class PVPManagerPlugin extends JavaPlugin {
 
     public void initialize() {
         instance = this;
-        initializeConfig();
         Debug.init(this);
         Bukkit.getPluginManager().registerEvents(dataManager, this);
         initializeKits();
