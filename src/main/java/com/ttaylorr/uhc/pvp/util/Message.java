@@ -13,13 +13,13 @@ public class Message {
         sender.sendMessage(ChatColor.AQUA + "[PVP]" + ChatColor.GRAY + " - " + ChatColor.RESET + colorize(color, message));
     }
     public static void warn(CommandSender sender, String message) {
-        message(sender, ChatColor.GOLD, "⚠ " + ChatColor.RESET + message);
+        message(sender, ChatColor.GOLD, "\u26a0 " + ChatColor.RESET + message);
     }
     public static void failure(CommandSender sender, String message) {
-        message(sender, ChatColor.RED, ChatColor.BOLD + "✗ " + ChatColor.RESET + message);
+        message(sender, ChatColor.RED, ChatColor.BOLD + "\u2717 " + ChatColor.RESET + message);
     }
     public static void success(CommandSender sender, String message) {
-        message(sender, ChatColor.GREEN, ChatColor.BOLD + "✔ " + ChatColor.RESET + message);
+        message(sender, ChatColor.GREEN, ChatColor.BOLD + "\u2714 " + ChatColor.RESET + message);
     }
     private static String colorize(ChatColor color, String message) {
         return color + message.replace(ChatColor.RESET.toString(), color.toString());
