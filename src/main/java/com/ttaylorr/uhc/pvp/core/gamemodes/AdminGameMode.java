@@ -17,9 +17,10 @@ public class AdminGameMode extends GameMode {
     }
 
     @Override
-    protected void onExit(Player p, Continuation continuation) {
+    protected Continuation onExit(Player p, Continuation continuation) {
         immediateExit(p);
         continuation.success();
+        return Continuation.empty();
     }
 
     @Override

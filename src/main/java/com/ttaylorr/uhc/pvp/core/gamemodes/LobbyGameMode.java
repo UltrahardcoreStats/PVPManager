@@ -45,8 +45,9 @@ public class LobbyGameMode extends GameMode implements Listener, CommandListener
     }
 
     @Override
-    protected void onExit(Player p, Continuation continuation) {
+    protected Continuation onExit(Player p, Continuation continuation) {
         continuation.success();
+        return Continuation.empty();
     }
 
     @Override

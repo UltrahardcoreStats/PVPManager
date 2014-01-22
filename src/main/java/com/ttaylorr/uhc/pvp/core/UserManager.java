@@ -68,8 +68,11 @@ public class UserManager implements CommandListener {
 
     public void switchGameMode(final Player player, final GameMode to) {
         final UserData userData = getUserData(player);
+        if(userData.transitioning) {
+            userData.transition.failure();
+        }
         userData.transitioning = true;
-        userData.gameMode.exit(player, new Continuation() {
+        userData.transition = userData.gameMode.exit(player, new Continuation() {
             @Override
             public void success() {
                 userData.transitioning = false;
@@ -135,6 +138,7 @@ public class UserManager implements CommandListener {
     public static class UserData {
         public GameMode gameMode;
         public boolean transitioning;
+        public Continuation transition;
 
         public boolean isSubscribed() {
             return gameMode != null;

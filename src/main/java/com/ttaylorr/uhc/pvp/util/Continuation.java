@@ -13,19 +13,11 @@ public class Continuation {
         this.next = next;
     }
     public void success() {
-        validate();
         if(next != null) next.success();
     }
 
     public void failure() {
-        validate();
         if(next != null) next.failure();
-    }
-
-    public void validate() {
-        if(called)
-            throw new IllegalStateException("Continuation has already been called");
-        called = true; // Not foolproof, might not be called by subclass
     }
 
     protected Continuation getNext() {

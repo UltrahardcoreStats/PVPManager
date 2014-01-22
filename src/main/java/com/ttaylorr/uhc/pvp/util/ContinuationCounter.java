@@ -25,8 +25,13 @@ public class ContinuationCounter extends Continuation implements Runnable {
 
     @Override
     public void success() {
-        validate();
         task = Bukkit.getScheduler().runTaskTimer(PVPManagerPlugin.get(), this, 20, 20);
+    }
+
+    @Override
+    public void failure() {
+        task.cancel();
+        getNext().failure();
     }
 
     @Override

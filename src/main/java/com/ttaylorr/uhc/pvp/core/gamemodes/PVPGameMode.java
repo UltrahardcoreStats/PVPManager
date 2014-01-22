@@ -4,8 +4,8 @@ import com.ttaylorr.uhc.pvp.CommandListener;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.core.CombatTagger;
 import com.ttaylorr.uhc.pvp.core.SpawnManager;
-import com.ttaylorr.uhc.pvp.events.PlayerTaggedEvent;
 import com.ttaylorr.uhc.pvp.core.interfaces.SpawnChooser;
+import com.ttaylorr.uhc.pvp.events.PlayerTaggedEvent;
 import com.ttaylorr.uhc.pvp.util.*;
 import nl.dykam.dev.Kit;
 import nl.dykam.dev.KitAPI;
@@ -60,7 +60,7 @@ public class PVPGameMode extends GameMode implements Listener, CommandListener {
     }
 
     @Override
-    protected void onExit(final Player p, Continuation continuation) {
+    protected Continuation onExit(final Player p, Continuation continuation) {
         if(combatTagger.isTagged(p))
             continuation.failure();
         continuation = new ContinuationCounter(new Continuation(continuation) {
@@ -69,8 +69,15 @@ public class PVPGameMode extends GameMode implements Listener, CommandListener {
                 immediateExit(p);
                 super.success();
             }
+
+            @Override
+            public void failure() {
+                Message.warn(p, "Quitting PVP cancelled...");
+                super.failure();
+            }
         }, p, 5, "%d seconds left...", "Exiting PVP!");
         continuation.success();
+        return continuation;
     }
 
     @Override

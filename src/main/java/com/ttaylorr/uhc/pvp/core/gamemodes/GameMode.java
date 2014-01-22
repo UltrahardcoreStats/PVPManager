@@ -25,7 +25,7 @@ public abstract class GameMode {
      * @param p The player
      * @param continuation The followup once the player exited the gamemode
      */
-    protected abstract void onExit(Player p, Continuation continuation);
+    protected abstract Continuation onExit(Player p, Continuation continuation);
 
     /**
      * The supplied player is immediately exited from the gamemode,
@@ -58,8 +58,8 @@ public abstract class GameMode {
         spector.assignTo(player);
     }
 
-    public void exit(final Player player, final Continuation continuation) {
-        onExit(player, new Continuation(continuation) {
+    public Continuation exit(final Player player, final Continuation continuation) {
+        return onExit(player, new Continuation(continuation) {
             @Override
             public void success() {
                 remove(player);

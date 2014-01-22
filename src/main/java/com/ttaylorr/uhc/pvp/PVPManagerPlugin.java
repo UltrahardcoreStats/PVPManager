@@ -3,10 +3,8 @@ package com.ttaylorr.uhc.pvp;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.ttaylorr.uhc.pvp.core.CombatTagger;
-import com.ttaylorr.uhc.pvp.core.MagicWall;
-import com.ttaylorr.uhc.pvp.core.SpawnManager;
-import com.ttaylorr.uhc.pvp.core.UserManager;
+import com.ttaylorr.uhc.pvp.core.*;
+import com.ttaylorr.uhc.pvp.core.combattagger.CommandMatcher;
 import com.ttaylorr.uhc.pvp.core.gamemodes.AdminGameMode;
 import com.ttaylorr.uhc.pvp.core.gamemodes.LobbyGameMode;
 import com.ttaylorr.uhc.pvp.core.gamemodes.PVPGameMode;
@@ -17,7 +15,10 @@ import com.ttaylorr.uhc.pvp.util.serialization.SerializableLocation;
 import net.milkbowl.vault.permission.Permission;
 import nl.dykam.dev.FileKitManager;
 import nl.dykam.dev.KitManager;
-import nl.dykam.dev.spector.*;
+import nl.dykam.dev.spector.Spector;
+import nl.dykam.dev.spector.SpectorAPI;
+import nl.dykam.dev.spector.SpectorSettings;
+import nl.dykam.dev.spector.SpectorShield;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,8 +31,10 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class PVPManagerPlugin extends JavaPlugin {
 
@@ -134,7 +137,12 @@ public class PVPManagerPlugin extends JavaPlugin {
     private void registerProviders() {
         persistencies = new ArrayList<>();
         subCommands = new PVPManagerCommandMap();
-        CombatTagger combatTagger = new CombatTagger();
+        CombatTagger combatTagger = new SimpleCombatTagger(this);
+        Bukkit.getPluginManager().registerEvents(
+                new com.ttaylorr.uhc.pvp.core.combattagger.Listeners(
+                        combatTagger,
+                        new CommandMatcher(Collections.<Pattern>emptyList(), CommandMatcher.Mode.Blacklist)),
+                this);
         registerDefault(combatTagger);
         LobbyGameMode lobbyMode = new LobbyGameMode(this, lobbySpector);
         registerDefault(lobbyMode);
@@ -227,6 +235,10 @@ public class PVPManagerPlugin extends JavaPlugin {
 
     public Permission getPermission() {
         return permission;
+    }
+
+    public UserManager getUserManager() {
+        return userManager;
     }
 
     private class ReloadCommand extends PVPManagerCommand implements CommandExecutor {
