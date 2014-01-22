@@ -41,8 +41,6 @@
             <groupId>com.sk89q</groupId>
             <artifactId>worldguard</artifactId>
             <version>5.7.3</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/WorldGuard.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>nl.dykam.dev</groupId>
