@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class CommandMatcher {
     private final Collection<Pattern> patterns;
     private final Mode mode;
-    private static final Pattern regexPattern = Pattern.compile("^/(.*)/(i?)$", Pattern.LITERAL);
+    private static final Pattern regexPattern = Pattern.compile("^/(.*)/(i?)$");
 
     public CommandMatcher(Collection<Pattern> patterns, CommandMatcher.Mode mode) {
         this.patterns = patterns;
@@ -25,8 +25,8 @@ public class CommandMatcher {
     }
 
     public boolean isAllowed(String message) {
-        for(Pattern pattern : patterns) {
-            if(pattern.matcher(message).matches())
+        for (Pattern pattern : patterns) {
+            if (pattern.matcher(message).matches())
                 return mode == Mode.Whitelist;
         }
         return mode == Mode.Blacklist;
@@ -34,26 +34,27 @@ public class CommandMatcher {
 
     /**
      * Constructs a CommandMatcher based on the supplied config
+     *
      * @param config The config. The name has to be either command-whitelist pr command-blacklist
-     * @return       A CommandMatcher based on the input
+     * @return A CommandMatcher based on the input
      */
     public static CommandMatcher construct(ConfigurationSection config) {
         Preconditions.checkNotNull(config);
         Mode mode;
-        if(config.isList(Mode.Whitelist.getName()))
+        if (config.isList(Mode.Whitelist.getName()))
             mode = Mode.Whitelist;
-        else if(config.isList(Mode.Blacklist.getName()))
+        else if (config.isList(Mode.Blacklist.getName()))
             mode = Mode.Blacklist;
         else
             return new CommandMatcher(Collections.<Pattern>emptySet(), Mode.Blacklist);
 
         List<Pattern> patterns = new ArrayList<>();
 
-        for(String stringPattern : config.getStringList(mode.getName())) {
+        for (String stringPattern : config.getStringList(mode.getName())) {
             Matcher matcher = regexPattern.matcher(stringPattern);
-            if(!matcher.matches()) {
+            if (!matcher.matches()) {
                 stringPattern = stringPattern.replace(" ", "\\s+");
-                patterns.add(Pattern.compile("^" + stringPattern + "\\b", Pattern.CASE_INSENSITIVE));
+                patterns.add(Pattern.compile("^/" + stringPattern + "\\b", Pattern.CASE_INSENSITIVE));
                 continue;
             }
 
@@ -61,10 +62,10 @@ public class CommandMatcher {
             String flagString = matcher.group(2);
 
             int flags = 0;
-            if(flagString.contains("i"))
+            if (flagString.contains("i"))
                 flags |= Pattern.CASE_INSENSITIVE;
 
-            patterns.add(Pattern.compile(stringPattern, flags));
+            patterns.add(Pattern.compile(".*" + stringPattern + ".*", flags));
         }
 
         return new CommandMatcher(patterns, mode);

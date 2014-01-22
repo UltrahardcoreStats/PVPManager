@@ -13,6 +13,9 @@ permissions:
   pvpmanager.join.teleport.bypass:
     description: Allows you to bypass automatic teleporting when joining the lobby.
     default: false
+  pvpmanager.combattag.bypass:
+    description: Allows you to bypass combatlog death.
+    default: false
   pvpmanager.admin:
     description: Get PVPManager to treat you different.
     default: op

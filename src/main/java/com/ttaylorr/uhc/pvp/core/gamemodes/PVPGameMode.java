@@ -2,8 +2,9 @@ package com.ttaylorr.uhc.pvp.core.gamemodes;
 
 import com.ttaylorr.uhc.pvp.CommandListener;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
-import com.ttaylorr.uhc.pvp.core.CombatTagger;
 import com.ttaylorr.uhc.pvp.core.SpawnManager;
+import com.ttaylorr.uhc.pvp.core.UserManager;
+import com.ttaylorr.uhc.pvp.core.combattagger.CombatTagger;
 import com.ttaylorr.uhc.pvp.core.interfaces.SpawnChooser;
 import com.ttaylorr.uhc.pvp.events.PlayerTaggedEvent;
 import com.ttaylorr.uhc.pvp.util.*;
@@ -57,6 +58,7 @@ public class PVPGameMode extends GameMode implements Listener, CommandListener {
     protected void onEnter(Player p) {
         respawn(p);
         Message.Broadcast.message(p.getDisplayName() + " joined the arena!");
+        combatTagger.subscribe(p);
     }
 
     @Override
@@ -82,6 +84,7 @@ public class PVPGameMode extends GameMode implements Listener, CommandListener {
 
     @Override
     protected void onImmediateExit(Player p) {
+        combatTagger.unsubscribe(p);
         Message.Broadcast.message(p.getDisplayName() + " left the arena!");
     }
 
@@ -90,9 +93,10 @@ public class PVPGameMode extends GameMode implements Listener, CommandListener {
         if(!isInGameMode(pte.getPlayer()))
             return;
 
-        if(exitters.containsKey(pte.getPlayer())) {
-            exitters.remove(pte.getPlayer()).failure();
-        }
+        UserManager.UserData userData = getPlugin().getUserManager().getUserData(pte.getPlayer());
+        if(!userData.transitioning)
+            return;
+        userData.transition.failure();
     }
 
     @EventHandler

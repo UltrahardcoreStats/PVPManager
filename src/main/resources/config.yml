@@ -1,5 +1,7 @@
 # combattag.command-whitelist/combattag.command-blacklist
 #   White/blacklist of commands which can(not) be executed while tagged
+# combattag.tagtime
+#   Time in ticks to be tagged.
 # combattag.display.mode
 #   Output verbosity
 #   Possible values:
@@ -15,10 +17,11 @@ lobby:
   region: lobby
   spawn: !!null # Serlialized location
 combattag:
-  command-whitelist:
-    - /^pvp /
+  command-blacklist:
+    - /^/pvp(\b|$)/
   tagback: true
+  time: 100 # ticks
   display:
     mode: single
-    tag: You got tagged by {p}
-    untag: You are no longer tagged
+    tag: You got tagged
+    untag: You are no longer tagged, you can log out now
