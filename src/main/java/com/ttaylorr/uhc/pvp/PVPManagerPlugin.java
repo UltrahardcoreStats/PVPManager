@@ -115,10 +115,10 @@ public class PVPManagerPlugin extends JavaPlugin {
         spectatorSpector.show(pvpSpector);
         spectatorSpector.setShield(SpectorShield.ghost().canChat(true));
         spectatorSpector.setSettings(SpectorSettings.spectator());
-        spectatorSpector.addComponent(new TeamComponent(
-                Bukkit.getScoreboardManager().getMainScoreboard(),
-                ChatColor.BOLD + "◊ " + ChatColor.GRAY,
-                TeamMode.Ghost));
+//        spectatorSpector.addComponent(new TeamComponent(
+//                Bukkit.getScoreboardManager().getMainScoreboard(),
+//                ChatColor.BOLD + "◊ " + ChatColor.GRAY,
+//                TeamMode.Ghost));
 
         adminSpector.showAll();
         adminSpector.hideForAll();
