@@ -51,6 +51,7 @@ public class Listeners implements Listener {
         if(event.getEntity().hasMetadata("CombatLogged")) {
             Message.Broadcast.warn("Combat log: " + event.getDeathMessage());
             event.setDeathMessage(null);
+            event.getEntity().removeMetadata("CombatLogged", PVPManagerPlugin.get());
         }
     }
 
