@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -56,10 +57,18 @@ public class Listeners implements Listener {
     }
 
     @EventHandler
+    public void onPlayerKick(PlayerKickEvent event) {
+        event.getPlayer().setMetadata("CombatKicked", new FixedMetadataValue(PVPManagerPlugin.get(), null));
+    }
+
+    @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         if (player.hasPermission("pvpmanager.combattag.bypass"))
             return;
+        if(player.hasMetadata("CombatKicked"))
+            return;
+        player.removeMetadata("CombatKicked", PVPManagerPlugin.get());
         if (!combatTagger.isTagged(player))
             return;
 
