@@ -17,10 +17,12 @@ import org.bukkit.metadata.FixedMetadataValue;
 public class Listeners implements Listener {
     private final CombatTagger combatTagger;
     private final CommandMatcher commandMatcher;
+    private final PVPManagerPlugin plugin;
 
     public Listeners(CombatTagger combatTagger, CommandMatcher commandMatcher) {
         this.combatTagger = combatTagger;
         this.commandMatcher = commandMatcher;
+        plugin = PVPManagerPlugin.get();
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -52,13 +54,13 @@ public class Listeners implements Listener {
         if(event.getEntity().hasMetadata("CombatLogged")) {
             Message.Broadcast.warn("Combat log: " + event.getDeathMessage());
             event.setDeathMessage(null);
-            event.getEntity().removeMetadata("CombatLogged", PVPManagerPlugin.get());
+            event.getEntity().removeMetadata("CombatLogged", plugin);
         }
     }
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event) {
-        event.getPlayer().setMetadata("CombatKicked", new FixedMetadataValue(PVPManagerPlugin.get(), null));
+        event.getPlayer().setMetadata("CombatKicked", new FixedMetadataValue(plugin, null));
     }
 
     @EventHandler
@@ -68,11 +70,11 @@ public class Listeners implements Listener {
             return;
         if(player.hasMetadata("CombatKicked"))
             return;
-        player.removeMetadata("CombatKicked", PVPManagerPlugin.get());
+        player.removeMetadata("CombatKicked", plugin);
         if (!combatTagger.isTagged(player))
             return;
 
-        player.setMetadata("CombatLogged", new FixedMetadataValue(PVPManagerPlugin.get(), null));
+        player.setMetadata("CombatLogged", new FixedMetadataValue(plugin, null));
 
         if(player.getLastDamageCause() == null) {
             player.damage(10000.0, player);
