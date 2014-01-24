@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -61,6 +62,11 @@ public class Listeners implements Listener {
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event) {
         event.getPlayer().setMetadata("CombatKicked", new FixedMetadataValue(plugin, null));
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        event.getPlayer().removeMetadata("CombatLogged", plugin);
     }
 
     @EventHandler
