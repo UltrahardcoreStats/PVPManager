@@ -7,8 +7,9 @@ import nl.dykam.dev.Kit;
 import nl.dykam.dev.KitAPI;
 import nl.dykam.dev.reutil.ReUtil;
 import nl.dykam.dev.spector.Spector;
-import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,6 +37,7 @@ public class LobbyGameMode extends GameMode implements Listener, CommandListener
     protected void onEnter(Player p) {
         p.teleport(getSpawn());
         p.setVelocity(new Vector());
+        p.playEffect(getSpawn(), Effect.RECORD_PLAY, Material.RECORD_8 /* stall, smooth jazz */);
         Kit kit = KitAPI.getManager().get("lobby");
         if(null != kit)
             kit.apply(p, true);
@@ -48,12 +50,13 @@ public class LobbyGameMode extends GameMode implements Listener, CommandListener
     @Override
     protected Continuation onExit(Player p, Continuation continuation) {
         continuation.success();
+        p.playEffect(getSpawn(), Effect.RECORD_PLAY, 0);
         return Continuation.empty();
     }
 
     @Override
     protected void onImmediateExit(Player p) {
-
+        p.playEffect(getSpawn(), Effect.RECORD_PLAY, 0);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
