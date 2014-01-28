@@ -5,6 +5,7 @@ import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.util.*;
 import nl.dykam.dev.Kit;
 import nl.dykam.dev.KitAPI;
+import nl.dykam.dev.reutil.ReUtil;
 import nl.dykam.dev.spector.Spector;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -28,7 +29,7 @@ public class SpectatorGameMode extends GameMode implements Listener, CommandList
         commands = new Command[] {
                 new SetSpawnCommand(),
         };
-        Bukkit.getPluginManager().registerEvents(this, getPlugin());
+        ReUtil.register(this, getPlugin());
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.ttaylorr.uhc.pvp.core.combattagger;
 
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.util.Message;
+import nl.dykam.dev.reutil.events.AutoEventHandler;
+import nl.dykam.dev.reutil.events.Bind;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -26,26 +28,21 @@ public class Listeners implements Listener {
         plugin = PVPManagerPlugin.get();
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+    @AutoEventHandler(priority = EventPriority.MONITOR)
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event, @Bind("entity") Player defender, @Bind("damager") Player attacker) {
         if (event.getDamage() <= 0)
             return;
-        if (!(event.getDamager() instanceof Player) || !(event.getEntity() instanceof Player))
-            return;
 
-        combatTagger.tag((Player) event.getEntity(), (Player) event.getDamager());
+        combatTagger.tag(defender, attacker);
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onEntityDamageByArrow(EntityDamageByEntityEvent event) {
+    @AutoEventHandler(priority = EventPriority.MONITOR)
+    public void onEntityDamageByArrow(EntityDamageByEntityEvent event, @Bind("entity") Player defender, @Bind("damager") Projectile projectile) {
         if (event.getDamage() <= 0)
             return;
-        if (!(event.getEntity() instanceof Player && (event.getDamager() instanceof Projectile)))
-            return;
-        Projectile projectile = (Projectile) event.getDamager();
         if (!(projectile.getShooter() instanceof Player))
             return;
-        combatTagger.tag((Player) event.getEntity(), (Player) projectile.getShooter());
+        combatTagger.tag(defender, (Player) projectile.getShooter());
     }
 
     @EventHandler

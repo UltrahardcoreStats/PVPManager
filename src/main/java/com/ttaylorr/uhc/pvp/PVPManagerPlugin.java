@@ -17,6 +17,7 @@ import com.ttaylorr.uhc.pvp.util.serialization.SerializableLocation;
 import net.milkbowl.vault.permission.Permission;
 import nl.dykam.dev.FileKitManager;
 import nl.dykam.dev.KitManager;
+import nl.dykam.dev.reutil.ReUtil;
 import nl.dykam.dev.spector.Spector;
 import nl.dykam.dev.spector.SpectorAPI;
 import nl.dykam.dev.spector.SpectorSettings;
@@ -65,7 +66,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         if(Bukkit.getWorld(getConfig().getString("world")) != null)
             initialize();
         else
-            Bukkit.getPluginManager().registerEvents(new WorldListener(this), this);
+            ReUtil.register(new WorldListener(this), this);
     }
 
     private boolean setupPermission() {
@@ -88,7 +89,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         initializeSpector();
         registerProviders();
         listeners = new Listeners(this, userManager);
-        Bukkit.getPluginManager().registerEvents(listeners, this);
+        ReUtil.register(listeners, this);
 
         registerCommand(new ReloadCommand());
         registerCommand(new ListCommand(), true);
@@ -134,7 +135,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         persistencies = new ArrayList<>();
         subCommands = new PVPManagerCommandMap();
         CombatTagger combatTagger = new PVPCombatTagger(this);
-        Bukkit.getPluginManager().registerEvents(
+        ReUtil.register(
                 new com.ttaylorr.uhc.pvp.core.combattagger.Listeners(
                         combatTagger, CommandMatcher.construct(getConfig().getConfigurationSection("combattag"))),
                 this);

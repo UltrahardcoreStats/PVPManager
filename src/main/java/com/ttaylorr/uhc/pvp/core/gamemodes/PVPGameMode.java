@@ -10,6 +10,7 @@ import com.ttaylorr.uhc.pvp.events.PlayerTaggedEvent;
 import com.ttaylorr.uhc.pvp.util.*;
 import nl.dykam.dev.Kit;
 import nl.dykam.dev.KitAPI;
+import nl.dykam.dev.reutil.ReUtil;
 import nl.dykam.dev.spector.Spector;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -51,7 +52,7 @@ public class PVPGameMode extends GameMode implements Listener, CommandListener {
         };
         context = new SpawnChooser.Context(this);
 
-        Bukkit.getPluginManager().registerEvents(this, getPlugin());
+        ReUtil.register(this, getPlugin());
     }
 
     @Override
