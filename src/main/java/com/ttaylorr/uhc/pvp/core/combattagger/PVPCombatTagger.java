@@ -1,30 +1,30 @@
 package com.ttaylorr.uhc.pvp.core.combattagger;
 
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
+import nl.dykam.dev.reutil.data.ComponentHandle;
+import nl.dykam.dev.reutil.data.ComponentManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-
 public class PVPCombatTagger implements CombatTagger {
     private final PVPManagerPlugin plugin;
+    private final ComponentHandle<Player, PlayerTagData> tagHandle;
     ConfigurationSection config;
     CommandMatcher commandMatcher;
-    HashMap<Player, PlayerTagData> tagData;
 
     public PVPCombatTagger(PVPManagerPlugin plugin) {
         this.plugin = plugin;
         config = this.plugin.getConfig().getConfigurationSection("combattag");
         commandMatcher = CommandMatcher.construct(config);
-        tagData = new HashMap<>();
+        tagHandle = ComponentManager.get(plugin).get(PlayerTagData.class);
     }
 
     @Override
     public void tag(Player defender, Player attacker) {
-        PlayerTagData defenderData = tagData.get(defender);
+        PlayerTagData defenderData = tagHandle.get(defender);
         if (defenderData == null)
             return;
-        PlayerTagData attackerData = tagData.get(attacker);
+        PlayerTagData attackerData = tagHandle.get(attacker);
         if (attackerData == null)
             return;
 
@@ -40,7 +40,7 @@ public class PVPCombatTagger implements CombatTagger {
 
     @Override
     public void untag(Player player) {
-        PlayerTagData playerTagData = tagData.get(player);
+        PlayerTagData playerTagData = tagHandle.get(player);
         if (playerTagData == null)
             return;
         playerTagData.untag();
@@ -48,16 +48,14 @@ public class PVPCombatTagger implements CombatTagger {
 
     @Override
     public boolean isTagged(Player player) {
-        PlayerTagData playerTagData = tagData.get(player);
+        PlayerTagData playerTagData = tagHandle.get(player);
         return playerTagData != null && playerTagData.isTagged();
     }
 
     public void subscribe(Player player) {
-        if(tagData.containsKey(player))
-            return;
-        tagData.put(player, new PlayerTagData(plugin, player));
+        tagHandle.ensure(player);
     }
     public void unsubscribe(Player player) {
-        tagData.remove(player);
+        tagHandle.remove(player);
     }
 }

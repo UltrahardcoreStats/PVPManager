@@ -3,30 +3,25 @@ package com.ttaylorr.uhc.pvp.core.combattagger;
 import com.ttaylorr.uhc.pvp.events.PlayerTaggedEvent;
 import com.ttaylorr.uhc.pvp.events.PlayerUntaggedEvent;
 import com.ttaylorr.uhc.pvp.util.Message;
+import nl.dykam.dev.reutil.data.Component;
+import nl.dykam.dev.reutil.data.annotations.Defaults;
+import nl.dykam.dev.reutil.data.annotations.Instantiation;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-class PlayerTagData implements Iterable<Player> {
-    Player player;
+@Defaults(instantiation = Instantiation.Manual, global = false)
+class PlayerTagData extends Component<Player> implements Iterable<Player> {
     Map<Player, Long> tags;
     long tagTime = -1;
-    Plugin plugin;
     BukkitTask tagOffAnnouncer;
 
-    public PlayerTagData(Plugin plugin, Player player) {
-        this.player = player;
+    public PlayerTagData() {
         tags = new HashMap<>();
-        this.plugin = plugin;
-    }
-
-    public Player getPlayer() {
-        return player;
     }
 
     public long getTagTimeBy(Player tagger) {
@@ -42,32 +37,32 @@ class PlayerTagData implements Iterable<Player> {
     }
 
     public boolean isTaggedBy(Player tagger) {
-        return tags.containsKey(tagger) && tags.get(tagger) + plugin.getConfig().getInt("combattag.time") >= getTimeStamp();
+        return tags.containsKey(tagger) && tags.get(tagger) + getContext().getPlugin().getConfig().getInt("combattag.time") >= getTimeStamp();
     }
 
     public boolean isTagged() {
-        return tagTime + plugin.getConfig().getInt("combattag.time") >= getTimeStamp();
+        return tagTime + getContext().getPlugin().getConfig().getInt("combattag.time") >= getTimeStamp();
     }
 
     public void tag(Player tagger) {
         tagTime = getTimeStamp();
         tags.put(tagger, tagTime);
-        if (!plugin.getConfig().getString("combattag.display.mode", "single").equals("none")) {
+        if (!getContext().getPlugin().getConfig().getString("combattag.display.mode", "single").equals("none")) {
             if (tagOffAnnouncer != null)
                 tagOffAnnouncer.cancel();
-            tagOffAnnouncer = Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            tagOffAnnouncer = Bukkit.getScheduler().runTaskLater(getContext().getPlugin(), new Runnable() {
                 @Override
                 public void run() {
                     untag();
                 }
-            }, plugin.getConfig().getInt("combattag.time", 100));
+            }, getContext().getPlugin().getConfig().getInt("combattag.time", 100));
         }
     }
 
     public void untag() {
         if(!isTagged())
             return;
-        PlayerUntaggedEvent event = new PlayerUntaggedEvent(player);
+        PlayerUntaggedEvent event = new PlayerUntaggedEvent(getObject());
         Bukkit.getPluginManager().callEvent(event);
         if(event.isCancelled())
             return;
@@ -76,28 +71,29 @@ class PlayerTagData implements Iterable<Player> {
         tags.clear();
         if (tagOffAnnouncer != null) {
             tagOffAnnouncer.cancel();
-            Message.success(player, plugin.getConfig().getString("combattag.display.untag"));
+            tagOffAnnouncer = null;
+            Message.success(getObject(), getContext().getPlugin().getConfig().getString("combattag.display.untag"));
         }
     }
 
     public void tryTag(Player tagger) {
-        PlayerTaggedEvent event = new PlayerTaggedEvent(player);
+        PlayerTaggedEvent event = new PlayerTaggedEvent(getObject());
         Bukkit.getPluginManager().callEvent(event);
         if(event.isCancelled())
             return;
-        switch (plugin.getConfig().getString("combattag.display.mode", "single")) {
+        switch (getContext().getPlugin().getConfig().getString("combattag.display.mode", "single")) {
             case "single":
                 if (!isTagged()) {
-                    Message.warn(tagger, plugin.getConfig().getString("combattag.display.tag"));
+                    Message.warn(tagger, getContext().getPlugin().getConfig().getString("combattag.display.tag"));
                 }
                 break;
             case "per-person":
-                if (!isTaggedBy(player)) {
-                    Message.warn(tagger, plugin.getConfig().getString("combattag.display.tag"));
+                if (!isTaggedBy(getObject())) {
+                    Message.warn(tagger, getContext().getPlugin().getConfig().getString("combattag.display.tag"));
                 }
                 break;
             case "retag":
-                Message.warn(tagger, plugin.getConfig().getString("combattag.display.tag"));
+                Message.warn(tagger, getContext().getPlugin().getConfig().getString("combattag.display.tag"));
                 break;
         }
         tag(tagger); // Always tag, but only show the message if it is a new tag.

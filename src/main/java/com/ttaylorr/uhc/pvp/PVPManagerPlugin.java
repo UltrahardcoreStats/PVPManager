@@ -43,7 +43,6 @@ public class PVPManagerPlugin extends JavaPlugin {
     private static PVPManagerPlugin instance;
     List<Persistent> persistencies;
     CommandMap subCommands;
-    PlayerDataManager dataManager;
     Listeners listeners;
     private Spector lobbySpector;
     private Spector pvpSpector;
@@ -64,7 +63,6 @@ public class PVPManagerPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         initSerializables();
-        dataManager = new PlayerDataManager();
         setupPermission();
         initializeConfig();
         if(Bukkit.getWorld(getConfig().getString("world")) != null)
@@ -89,7 +87,6 @@ public class PVPManagerPlugin extends JavaPlugin {
     public void initialize() {
         instance = this;
         Debug.init(this);
-        Bukkit.getPluginManager().registerEvents(dataManager, this);
         initializeKits();
         initializeSpector();
         registerProviders();
@@ -204,10 +201,6 @@ public class PVPManagerPlugin extends JavaPlugin {
         if(args.length == 0)
             return super.onTabComplete(sender, command, alias, args);
         return subCommands.tabComplete(sender, StringUtils.join(args, ' '));
-    }
-
-    public PlayerDataManager getDataManager() {
-        return dataManager;
     }
 
     void registerDefault(Object service) {

@@ -7,8 +7,14 @@ import com.ttaylorr.uhc.pvp.core.gamemodes.GameMode;
 import com.ttaylorr.uhc.pvp.core.gamemodes.PVPGameMode;
 import com.ttaylorr.uhc.pvp.core.gamemodes.SpectatorGameMode;
 import com.ttaylorr.uhc.pvp.core.usermanager.SwitchGameModeCommandExecutor;
-import com.ttaylorr.uhc.pvp.util.*;
+import com.ttaylorr.uhc.pvp.util.Checker;
+import com.ttaylorr.uhc.pvp.util.Continuation;
+import com.ttaylorr.uhc.pvp.util.Message;
+import com.ttaylorr.uhc.pvp.util.PVPManagerCommand;
 import net.milkbowl.vault.permission.Permission;
+import nl.dykam.dev.reutil.data.Component;
+import nl.dykam.dev.reutil.data.ComponentHandle;
+import nl.dykam.dev.reutil.data.ComponentManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -23,20 +29,21 @@ import java.util.List;
 
 
 public class UserManager implements CommandListener {
-    private final PlayerDataManager dataManager;
+    private final ComponentHandle<Player, UserData> dataHandle;
 
     private final Command[] commands;
     private PVPManagerPlugin plugin;
     private GameMode defaultGameMode;
     private List<GameMode> gameModes;
 
+    @SuppressWarnings("unchecked")
     public UserManager(PVPManagerPlugin plugin, GameMode defaultGameMode, GameMode... otherGameModes) {
         this.plugin = plugin;
         this.defaultGameMode = defaultGameMode;
         this.gameModes = new ArrayList<>();
         gameModes.add(defaultGameMode);
         gameModes.addAll(Arrays.asList(otherGameModes));
-        dataManager = getPlugin().getDataManager();
+        dataHandle = ComponentManager.get(plugin).get(UserData.class);
         commands = new Command[]{
             new PVPManagerCommand(new CommandExecutor() {
                 @Override
@@ -113,7 +120,7 @@ public class UserManager implements CommandListener {
     }
 
     public UserData getUserData(Player player) {
-        return dataManager.get(player, UserData.class);
+        return dataHandle.get(player);
     }
 
     public void addTransition(String commandName, GameMode from, GameMode to, String alreadyInMessage, String wrongCurrentGameModeMessage) {
@@ -135,7 +142,7 @@ public class UserManager implements CommandListener {
         return Collections.unmodifiableList(gameModes);
     }
 
-    public static class UserData {
+    public static class UserData extends Component<Player> {
         public GameMode gameMode;
         public boolean transitioning;
         public Continuation transition;

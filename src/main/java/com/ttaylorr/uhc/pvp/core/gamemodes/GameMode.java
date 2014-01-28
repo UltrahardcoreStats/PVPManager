@@ -4,6 +4,8 @@ import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.core.UserManager;
 import com.ttaylorr.uhc.pvp.util.Continuation;
 import net.milkbowl.vault.permission.Permission;
+import nl.dykam.dev.reutil.data.ComponentHandle;
+import nl.dykam.dev.reutil.data.ComponentManager;
 import nl.dykam.dev.spector.Spector;
 import org.bukkit.entity.Player;
 
@@ -12,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class GameMode {
+    private final ComponentHandle<Player, UserManager.UserData> dataHandle;
     private Set<Player> players;
     private PVPManagerPlugin plugin;
     private Spector spector;
@@ -38,16 +41,19 @@ public abstract class GameMode {
         return permissionGroup;
     }
 
+    @SuppressWarnings("unchecked")
     protected GameMode(PVPManagerPlugin plugin, Spector spector, String name) {
         this.plugin = plugin;
         this.spector = spector;
         this.name = name;
 
+        dataHandle = ComponentManager.get(plugin).get(UserManager.UserData.class);
+
         players = new HashSet<>();
     }
 
     public void enter(Player player) {
-        plugin.getDataManager().get(player, UserManager.UserData.class).gameMode = this;
+        dataHandle.get(player).gameMode = this;
         players.add(player);
         Permission permission = plugin.getPermission();
         if(permission != null) {
@@ -86,6 +92,10 @@ public abstract class GameMode {
 
     public Set<Player> getPlayers() {
         return Collections.unmodifiableSet(players);
+    }
+
+    public ComponentHandle<Player, UserManager.UserData> getDataHandle() {
+        return dataHandle;
     }
 
     public PVPManagerPlugin getPlugin() {
