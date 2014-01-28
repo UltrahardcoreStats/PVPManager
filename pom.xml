@@ -38,11 +38,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.sk89q</groupId>
-            <artifactId>worldguard</artifactId>
-            <version>5.7.3</version>
-        </dependency>
-        <dependency>
             <groupId>nl.dykam.dev</groupId>
             <artifactId>Kitter</artifactId>
             <version>1.0</version>
@@ -60,7 +55,7 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
-            <version>1.2.29</version>
+            <version>1.2.27</version>
         </dependency>
     </dependencies>
 

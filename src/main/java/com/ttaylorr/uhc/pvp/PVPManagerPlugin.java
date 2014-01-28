@@ -2,8 +2,6 @@ package com.ttaylorr.uhc.pvp;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.ttaylorr.uhc.pvp.core.MagicWall;
 import com.ttaylorr.uhc.pvp.core.SpawnManager;
 import com.ttaylorr.uhc.pvp.core.UserManager;
 import com.ttaylorr.uhc.pvp.core.combattagger.CombatTagger;
@@ -27,7 +25,6 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.World;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -164,15 +161,6 @@ public class PVPManagerPlugin extends JavaPlugin {
         userManager.addTransition("spec-join", lobbyMode, spectatorGameMode, "You are already in spectator mode", "You can only join spectator mode from lobby");
         userManager.addTransition("spec-quit", spectatorGameMode, lobbyMode, "You are already in the lobby", "You are not in spectator mode");
         registerDefault(userManager);
-
-        if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
-            WorldGuardPlugin worldGuard = (WorldGuardPlugin)Bukkit.getPluginManager().getPlugin("WorldGuard");
-            World world = Bukkit.getWorld("world");
-            String region = getConfig().getString("arena.region");
-            if (world != null && worldGuard.getRegionManager(world).hasRegion(region)) {
-                registerDefault(new MagicWall("world", region));
-            }
-        }
     }
 
     private void initializeConfig() {
