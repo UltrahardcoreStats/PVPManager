@@ -3,7 +3,7 @@ version: ${project.version}
 description: ${project.description}
 main: ${plugin.mainClass}
 softdepend: [WorldGuard,Multiverse-Core,Vault]
-depend: [Kitter,Spector]
+depend: [Kitter,Spector,ReUtil]
 commands:
   pvp:
     permission: pvpmanager.command
