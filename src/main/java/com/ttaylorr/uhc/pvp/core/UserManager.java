@@ -1,5 +1,6 @@
 package com.ttaylorr.uhc.pvp.core;
 
+import com.google.common.base.Function;
 import com.ttaylorr.uhc.pvp.CommandListener;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.core.gamemodes.AdminGameMode;
@@ -30,19 +31,16 @@ import java.util.List;
 
 public class UserManager implements CommandListener {
     private final ComponentHandle<Player, UserData> dataHandle;
-
     private final Command[] commands;
     private PVPManagerPlugin plugin;
-    private GameMode defaultGameMode;
+    private Function<Player, GameMode> defaultGameMode;
     private List<GameMode> gameModes;
 
-    @SuppressWarnings("unchecked")
-    public UserManager(PVPManagerPlugin plugin, GameMode defaultGameMode, GameMode... otherGameModes) {
+    public UserManager(PVPManagerPlugin plugin, Function<Player, GameMode> defaultGameMode, GameMode... gameModes) {
         this.plugin = plugin;
         this.defaultGameMode = defaultGameMode;
         this.gameModes = new ArrayList<>();
-        gameModes.add(defaultGameMode);
-        gameModes.addAll(Arrays.asList(otherGameModes));
+        this.gameModes.addAll(Arrays.asList(gameModes));
         dataHandle = ComponentManager.get(plugin).get(UserData.class);
         commands = new Command[]{
             new PVPManagerCommand(new CommandExecutor() {
@@ -102,7 +100,7 @@ public class UserManager implements CommandListener {
                     permission.playerRemoveGroup(player, gameMode.getPermissionGroup());
             }
         }
-        defaultGameMode.enter(player);
+        defaultGameMode.apply(player).enter(player);
     }
 
     public void unsubscribe(Player player) {

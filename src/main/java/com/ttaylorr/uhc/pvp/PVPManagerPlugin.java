@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.ttaylorr.uhc.pvp.core.SpawnManager;
 import com.ttaylorr.uhc.pvp.core.UserManager;
+import com.ttaylorr.uhc.pvp.core.UserSettings;
 import com.ttaylorr.uhc.pvp.core.combattagger.CombatTagger;
 import com.ttaylorr.uhc.pvp.core.combattagger.CommandMatcher;
 import com.ttaylorr.uhc.pvp.core.combattagger.PVPCombatTagger;
@@ -18,6 +19,8 @@ import net.milkbowl.vault.permission.Permission;
 import nl.dykam.dev.FileKitManager;
 import nl.dykam.dev.KitManager;
 import nl.dykam.dev.reutil.ReUtil;
+import nl.dykam.dev.reutil.data.ComponentHandle;
+import nl.dykam.dev.reutil.data.ComponentManager;
 import nl.dykam.dev.spector.Spector;
 import nl.dykam.dev.spector.SpectorAPI;
 import nl.dykam.dev.spector.SpectorSettings;
@@ -37,7 +40,6 @@ import java.util.List;
 import java.util.Set;
 
 public class PVPManagerPlugin extends JavaPlugin {
-
     private static PVPManagerPlugin instance;
     List<Persistent> persistencies;
     CommandMap subCommands;
@@ -48,6 +50,8 @@ public class PVPManagerPlugin extends JavaPlugin {
     private Spector adminSpector;
     private UserManager userManager;
     Permission permission;
+    private ComponentHandle<Player, UserSettings> settingsHandle;
+    private ComponentManager componentManager;
 
     public static PVPManagerPlugin get() {
         return instance;
@@ -60,6 +64,8 @@ public class PVPManagerPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        componentManager = ComponentManager.get(this);
+        settingsHandle = componentManager.get(UserSettings.class);
         initSerializables();
         setupPermission();
         initializeConfig();
@@ -140,21 +146,31 @@ public class PVPManagerPlugin extends JavaPlugin {
                         combatTagger, CommandMatcher.construct(getConfig().getConfigurationSection("combattag"))),
                 this);
         registerDefault(combatTagger);
-        LobbyGameMode lobbyMode = new LobbyGameMode(this, lobbySpector);
+        final LobbyGameMode lobbyMode = new LobbyGameMode(this, lobbySpector);
         registerDefault(lobbyMode);
         SpawnManager spawnManager = new SpawnManager(SpawnChooser.far());
         registerDefault(spawnManager);
         // Depends on SpawnManager, PVPRestrictionManager and CombatTagger
-        PVPGameMode pvpGameMode = new PVPGameMode(this, pvpSpector, spawnManager, combatTagger);
+        final PVPGameMode pvpGameMode = new PVPGameMode(this, pvpSpector, spawnManager, combatTagger);
         registerDefault(pvpGameMode);
 
-        AdminGameMode adminGameMode = new AdminGameMode(this, adminSpector);
+        final AdminGameMode adminGameMode = new AdminGameMode(this, adminSpector);
         registerDefault(adminGameMode);
         SpectatorGameMode spectatorGameMode = new SpectatorGameMode(this, spectatorSpector);
         registerDefault(spectatorGameMode);
 
         // Depends on PVPManagerPlugin, LobbyGameMode
-        userManager = new UserManager(this, lobbyMode, pvpGameMode, spectatorGameMode);
+        userManager = new UserManager(this, new Function<Player, com.ttaylorr.uhc.pvp.core.gamemodes.GameMode>() {
+            @Override
+            public com.ttaylorr.uhc.pvp.core.gamemodes.GameMode apply(Player player) {
+                if(player.isOp())
+                    return adminGameMode;
+                if(settingsHandle.get(player).instantJoinPvp()) {
+                    return pvpGameMode;
+                }
+                return lobbyMode;
+            }
+        }, lobbyMode, pvpGameMode, spectatorGameMode);
         userManager.addTransition("join", lobbyMode, pvpGameMode, "You are already in PVP", "You can only join from the lobby");
         userManager.addTransition("quit", pvpGameMode, lobbyMode, "You are already in the lobby", "You can only quit when in PVP");
         userManager.addTransition("admin-join", null, adminGameMode, "You are already in admin mode", "");

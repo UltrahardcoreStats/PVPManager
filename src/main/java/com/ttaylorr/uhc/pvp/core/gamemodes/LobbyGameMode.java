@@ -2,10 +2,13 @@ package com.ttaylorr.uhc.pvp.core.gamemodes;
 
 import com.ttaylorr.uhc.pvp.CommandListener;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
+import com.ttaylorr.uhc.pvp.core.UserSettings;
 import com.ttaylorr.uhc.pvp.util.*;
 import nl.dykam.dev.Kit;
 import nl.dykam.dev.KitAPI;
 import nl.dykam.dev.reutil.ReUtil;
+import nl.dykam.dev.reutil.data.ComponentHandle;
+import nl.dykam.dev.reutil.data.ComponentManager;
 import nl.dykam.dev.spector.Spector;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -24,6 +27,7 @@ import org.bukkit.util.Vector;
 
 public class LobbyGameMode extends GameMode implements Listener, CommandListener {
     private Command[] commands;
+    ComponentHandle<Player, UserSettings> settingsHandle;
 
     public LobbyGameMode(PVPManagerPlugin plugin, Spector spector) {
         super(plugin, spector, "lobby");
@@ -31,13 +35,15 @@ public class LobbyGameMode extends GameMode implements Listener, CommandListener
             new SetSpawnCommand(),
         };
         ReUtil.register(this, getPlugin());
+        settingsHandle = ComponentManager.get(getPlugin()).get(UserSettings.class);
     }
 
     @Override
     protected void onEnter(Player p) {
         p.teleport(getSpawn());
         p.setVelocity(new Vector());
-        p.playEffect(getSpawn(), Effect.RECORD_PLAY, Material.RECORD_8 /* stall, smooth jazz */);
+        if(settingsHandle.get(p).playLobbyMusic())
+            p.playEffect(getSpawn(), Effect.RECORD_PLAY, Material.RECORD_8 /* stall, smooth jazz */);
         Kit kit = KitAPI.getManager().get("lobby");
         if(null != kit)
             kit.apply(p, true);
