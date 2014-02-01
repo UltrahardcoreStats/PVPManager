@@ -7,13 +7,11 @@ import com.ttaylorr.uhc.pvp.core.gamemodes.AdminGameMode;
 import com.ttaylorr.uhc.pvp.core.gamemodes.GameMode;
 import com.ttaylorr.uhc.pvp.core.gamemodes.PVPGameMode;
 import com.ttaylorr.uhc.pvp.core.gamemodes.SpectatorGameMode;
-import com.ttaylorr.uhc.pvp.core.usermanager.SwitchGameModeCommandExecutor;
 import com.ttaylorr.uhc.pvp.util.Checker;
 import com.ttaylorr.uhc.pvp.util.Continuation;
 import com.ttaylorr.uhc.pvp.util.Message;
 import com.ttaylorr.uhc.pvp.util.PVPManagerCommand;
 import net.milkbowl.vault.permission.Permission;
-import nl.dykam.dev.reutil.data.Component;
 import nl.dykam.dev.reutil.data.ComponentHandle;
 import nl.dykam.dev.reutil.data.ComponentManager;
 import org.bukkit.Bukkit;
@@ -23,10 +21,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 
 public class UserManager implements CommandListener {
@@ -34,15 +29,15 @@ public class UserManager implements CommandListener {
     private final Command[] commands;
     private PVPManagerPlugin plugin;
     private Function<Player, GameMode> defaultGameMode;
-    private List<GameMode> gameModes;
+    private GameModeCollection gameModes;
 
     public UserManager(PVPManagerPlugin plugin, Function<Player, GameMode> defaultGameMode, GameMode... gameModes) {
         this.plugin = plugin;
         this.defaultGameMode = defaultGameMode;
-        this.gameModes = new ArrayList<>();
-        this.gameModes.addAll(Arrays.asList(gameModes));
+        this.gameModes = new GameModeCollection(this, defaultGameMode);
+        this.gameModes.add(Arrays.asList(gameModes));
         dataHandle = ComponentManager.get(plugin).get(UserData.class);
-        commands = new Command[]{
+        commands = new Command[] {
             new PVPManagerCommand(new CommandExecutor() {
                 @Override
                 public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
@@ -56,9 +51,9 @@ public class UserManager implements CommandListener {
                         if (userData.gameMode instanceof PVPGameMode)
                             Message.message(player, "You are in PVP, to leave: " + ChatColor.UNDERLINE + "/pvp quit");
                         else if(userData.gameMode instanceof SpectatorGameMode)
-                            Message.message(player, "You are in spectator mode, to leave: " + ChatColor.UNDERLINE + "/pvp spec-quit");
+                            Message.message(player, "You are in spectator mode, to leave: " + ChatColor.UNDERLINE + "/pvp quit");
                         else if(userData.gameMode instanceof AdminGameMode)
-                            Message.message(player, "You are in admin mode, to leave: " + ChatColor.UNDERLINE + "/pvp admin-quit");
+                            Message.message(player, "You are in admin mode, to leave: " + ChatColor.UNDERLINE + "/pvp quit");
                         else
                             Message.message(player, "You are in the lobby, to join: " + ChatColor.UNDERLINE + "/pvp join");
                     }
@@ -95,12 +90,12 @@ public class UserManager implements CommandListener {
     public void subscribe(Player player) {
         Permission permission = plugin.getPermission();
         if(permission != null) {
-            for (GameMode gameMode : gameModes) {
+            for (GameMode gameMode : gameModes.getGameModes()) {
                 if(permission.playerInGroup(player, gameMode.getPermissionGroup()))
                     permission.playerRemoveGroup(player, gameMode.getPermissionGroup());
             }
         }
-        defaultGameMode.apply(player).enter(player);
+        gameModes.getDefaultGameMode(player).enter(player);
     }
 
     public void unsubscribe(Player player) {
@@ -121,12 +116,6 @@ public class UserManager implements CommandListener {
         return dataHandle.get(player);
     }
 
-    public void addTransition(String commandName, GameMode from, GameMode to, String alreadyInMessage, String wrongCurrentGameModeMessage) {
-        SwitchGameModeCommandExecutor executor = new SwitchGameModeCommandExecutor(this, alreadyInMessage, wrongCurrentGameModeMessage, from, to);
-        PVPManagerCommand command = new PVPManagerCommand(executor, commandName);
-        plugin.registerCommand(command);
-    }
-
     @Override
     public Command[] getCommands() {
         return commands;
@@ -136,17 +125,8 @@ public class UserManager implements CommandListener {
         return plugin;
     }
 
-    public List<GameMode> getGameModes() {
-        return Collections.unmodifiableList(gameModes);
+    public GameModeCollection getGameModes() {
+        return gameModes;
     }
 
-    public static class UserData extends Component<Player> {
-        public GameMode gameMode;
-        public boolean transitioning;
-        public Continuation transition;
-
-        public boolean isSubscribed() {
-            return gameMode != null;
-        }
-    }
 }

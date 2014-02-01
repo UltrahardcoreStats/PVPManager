@@ -3,7 +3,7 @@ package com.ttaylorr.uhc.pvp.core.gamemodes;
 import com.ttaylorr.uhc.pvp.CommandListener;
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.core.SpawnManager;
-import com.ttaylorr.uhc.pvp.core.UserManager;
+import com.ttaylorr.uhc.pvp.core.UserData;
 import com.ttaylorr.uhc.pvp.core.combattagger.CombatTagger;
 import com.ttaylorr.uhc.pvp.core.interfaces.SpawnChooser;
 import com.ttaylorr.uhc.pvp.events.PlayerTaggedEvent;
@@ -11,8 +11,8 @@ import com.ttaylorr.uhc.pvp.util.*;
 import nl.dykam.dev.Kit;
 import nl.dykam.dev.KitAPI;
 import nl.dykam.dev.reutil.ReUtil;
+import nl.dykam.dev.reutil.data.ComponentManager;
 import nl.dykam.dev.spector.Spector;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -94,7 +94,7 @@ public class PVPGameMode extends GameMode implements Listener, CommandListener {
         if(!isInGameMode(pte.getPlayer()))
             return;
 
-        UserManager.UserData userData = getPlugin().getUserManager().getUserData(pte.getPlayer());
+        UserData userData = getPlugin().getUserManager().getUserData(pte.getPlayer());
         if(!userData.transitioning)
             return;
         userData.transition.failure();
@@ -138,6 +138,7 @@ public class PVPGameMode extends GameMode implements Listener, CommandListener {
         }
         spawnManager.respawn(player, context);
         //player.setWalkSpeed(0.2888889014720917f);
+        GameMode gameMode = ComponentManager.get(getPlugin()).get(player, UserData.class).gameMode;
         player.setWalkSpeed(0.24f);
         //player.setWalkSpeed(0.2f);
     }

@@ -2,16 +2,14 @@ package com.ttaylorr.uhc.pvp;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
+import com.ttaylorr.uhc.pvp.core.GameModeCollection;
 import com.ttaylorr.uhc.pvp.core.SpawnManager;
 import com.ttaylorr.uhc.pvp.core.UserManager;
 import com.ttaylorr.uhc.pvp.core.UserSettings;
 import com.ttaylorr.uhc.pvp.core.combattagger.CombatTagger;
 import com.ttaylorr.uhc.pvp.core.combattagger.CommandMatcher;
 import com.ttaylorr.uhc.pvp.core.combattagger.PVPCombatTagger;
-import com.ttaylorr.uhc.pvp.core.gamemodes.AdminGameMode;
-import com.ttaylorr.uhc.pvp.core.gamemodes.LobbyGameMode;
-import com.ttaylorr.uhc.pvp.core.gamemodes.PVPGameMode;
-import com.ttaylorr.uhc.pvp.core.gamemodes.SpectatorGameMode;
+import com.ttaylorr.uhc.pvp.core.gamemodes.*;
 import com.ttaylorr.uhc.pvp.core.interfaces.SpawnChooser;
 import com.ttaylorr.uhc.pvp.util.*;
 import com.ttaylorr.uhc.pvp.util.serialization.SerializableLocation;
@@ -28,7 +26,6 @@ import nl.dykam.dev.spector.SpectorShield;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -129,7 +126,7 @@ public class PVPManagerPlugin extends JavaPlugin {
         adminSpector.showAll();
         adminSpector.hideForAll();
         adminSpector.setShield(SpectorShield.noShield().canPickup(false));
-        adminSpector.setSettings(SpectorSettings.spectator().gameMode(GameMode.CREATIVE));
+        adminSpector.setSettings(SpectorSettings.spectator().gameMode(org.bukkit.GameMode.CREATIVE));
     }
 
     private void initializeKits() {
@@ -160,9 +157,9 @@ public class PVPManagerPlugin extends JavaPlugin {
         registerDefault(spectatorGameMode);
 
         // Depends on PVPManagerPlugin, LobbyGameMode
-        userManager = new UserManager(this, new Function<Player, com.ttaylorr.uhc.pvp.core.gamemodes.GameMode>() {
+        userManager = new UserManager(this, new Function<Player, GameMode>() {
             @Override
-            public com.ttaylorr.uhc.pvp.core.gamemodes.GameMode apply(Player player) {
+            public GameMode apply(Player player) {
                 if(player.isOp())
                     return adminGameMode;
                 if(settingsHandle.get(player).instantJoinPvp()) {
@@ -170,13 +167,17 @@ public class PVPManagerPlugin extends JavaPlugin {
                 }
                 return lobbyMode;
             }
-        }, lobbyMode, pvpGameMode, spectatorGameMode);
-        userManager.addTransition("join", lobbyMode, pvpGameMode, "You are already in PVP", "You can only join from the lobby");
-        userManager.addTransition("quit", pvpGameMode, lobbyMode, "You are already in the lobby", "You can only quit when in PVP");
-        userManager.addTransition("admin-join", null, adminGameMode, "You are already in admin mode", "");
-        userManager.addTransition("admin-quit", adminGameMode, lobbyMode, "You are already in lobby mode", "You are not in admin mode");
-        userManager.addTransition("spec-join", lobbyMode, spectatorGameMode, "You are already in spectator mode", "You can only join spectator mode from lobby");
-        userManager.addTransition("spec-quit", spectatorGameMode, lobbyMode, "You are already in the lobby", "You are not in spectator mode");
+        }, lobbyMode, pvpGameMode, spectatorGameMode, adminGameMode);
+
+        GameModeCollection gameModes = userManager.getGameModes();
+        gameModes.addTransition("join", pvpGameMode);
+        gameModes.addTransition("quit", lobbyMode);
+        gameModes.addTransition("join-admin", adminGameMode);
+        gameModes.addTransition("join-spec", spectatorGameMode);
+        for (Command command : gameModes.getCommands()) {
+            registerCommand(command);
+        }
+
         registerDefault(userManager);
     }
 
@@ -265,7 +266,9 @@ public class PVPManagerPlugin extends JavaPlugin {
         @Override
         public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
             StringBuilder sb = new StringBuilder();
-            for (com.ttaylorr.uhc.pvp.core.gamemodes.GameMode gameMode : userManager.getGameModes()) {
+            GameModeCollection gameModes = userManager.getGameModes();
+            List<GameMode> visibleGameModes = commandSender instanceof Player ? gameModes.getGameModes((Player) commandSender) : gameModes.getGameModes();
+            for (GameMode gameMode : visibleGameModes) {
                 Set<Player> players = gameMode.getPlayers();
                 sb
                         .append(ChatColor.GOLD)

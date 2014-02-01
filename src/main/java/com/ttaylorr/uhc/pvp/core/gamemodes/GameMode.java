@@ -1,7 +1,7 @@
 package com.ttaylorr.uhc.pvp.core.gamemodes;
 
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
-import com.ttaylorr.uhc.pvp.core.UserManager;
+import com.ttaylorr.uhc.pvp.core.UserData;
 import com.ttaylorr.uhc.pvp.util.Continuation;
 import net.milkbowl.vault.permission.Permission;
 import nl.dykam.dev.reutil.data.ComponentHandle;
@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class GameMode {
-    private final ComponentHandle<Player, UserManager.UserData> dataHandle;
+    private final ComponentHandle<Player, UserData> dataHandle;
     private Set<Player> players;
     private PVPManagerPlugin plugin;
     private Spector spector;
@@ -47,7 +47,7 @@ public abstract class GameMode {
         this.spector = spector;
         this.name = name;
 
-        dataHandle = ComponentManager.get(plugin).get(UserManager.UserData.class);
+        dataHandle = ComponentManager.get(plugin).get(UserData.class);
 
         players = new HashSet<>();
     }
@@ -94,7 +94,7 @@ public abstract class GameMode {
         return Collections.unmodifiableSet(players);
     }
 
-    public ComponentHandle<Player, UserManager.UserData> getDataHandle() {
+    public ComponentHandle<Player, UserData> getDataHandle() {
         return dataHandle;
     }
 

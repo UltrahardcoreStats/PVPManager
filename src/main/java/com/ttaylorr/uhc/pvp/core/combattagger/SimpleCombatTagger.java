@@ -1,7 +1,7 @@
 package com.ttaylorr.uhc.pvp.core.combattagger;
 
 import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
-import com.ttaylorr.uhc.pvp.core.UserManager;
+import com.ttaylorr.uhc.pvp.core.UserData;
 import org.bukkit.entity.Player;
 
 import java.util.Set;
@@ -20,7 +20,7 @@ public class SimpleCombatTagger implements CombatTagger {
     }
 
     private void tag(Player player) {
-        UserManager.UserData userData = plugin.getUserManager().getUserData(player);
+        UserData userData = plugin.getUserManager().getUserData(player);
         if(userData.transitioning) {
             userData.transition.failure();
         }

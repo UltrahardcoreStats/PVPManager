@@ -1,5 +1,6 @@
 package com.ttaylorr.uhc.pvp;
 
+import com.ttaylorr.uhc.pvp.core.UserData;
 import com.ttaylorr.uhc.pvp.core.UserManager;
 import com.ttaylorr.uhc.pvp.core.gamemodes.PVPGameMode;
 import com.ttaylorr.uhc.pvp.util.Message;
@@ -39,7 +40,7 @@ public class Listeners implements Listener {
     private void onPlayerTeleport(PlayerTeleportEvent event) {
         if(event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL)
             return;
-        UserManager.UserData userData = userManager.getUserData(event.getPlayer());
+        UserData userData = userManager.getUserData(event.getPlayer());
         if(userData == null)
             return;
         if(!(userData.gameMode instanceof PVPGameMode))
@@ -52,7 +53,7 @@ public class Listeners implements Listener {
             if (!(event.getEntity().getShooter() instanceof Player))
                 return;
             Player shooter = (Player) event.getEntity().getShooter();
-            UserManager.UserData userData = userManager.getUserData(shooter);
+            UserData userData = userManager.getUserData(shooter);
             if (userData == null)
                 return;
             if (userData.transitioning) {
@@ -63,7 +64,7 @@ public class Listeners implements Listener {
             if (!(event.getEntity().getShooter() instanceof Player))
                 return;
             Player shooter = (Player) event.getEntity().getShooter();
-            UserManager.UserData userData = userManager.getUserData(shooter);
+            UserData userData = userManager.getUserData(shooter);
             if (userData == null)
                 return;
             if(!(userData.gameMode instanceof PVPGameMode))
