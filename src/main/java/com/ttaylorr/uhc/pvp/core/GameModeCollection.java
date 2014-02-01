@@ -145,7 +145,10 @@ public class GameModeCollection {
                 return super.testPermissionSilent(target);
             Player player = (Player) target;
             GameMode from = dataHandle.get(player).gameMode;
-            for (Map.Entry<String, GameMode> transition : transitions.get(from).entrySet()) {
+            HashMap<String, GameMode> transitions = GameModeCollection.this.transitions.get(from);
+            if(transitions == null)
+                return false;
+            for (Map.Entry<String, GameMode> transition : transitions.entrySet()) {
                 GameMode to = transition.getValue();
                 if(from == to) continue;
                 if(!transition.getKey().equals(getName())) continue;
