@@ -72,19 +72,30 @@ public class UserManager implements CommandListener {
             userData.transition.failure();
         }
         userData.transitioning = true;
-        userData.transition = userData.gameMode.exit(player, new Continuation() {
-            @Override
-            public void success() {
-                userData.transitioning = false;
-                to.enter(player);
-                userData.gameMode = to;
-            }
+        try {
+            userData.transition = userData.gameMode.exit(player, new Continuation() {
+                @Override
+                public void success() {
+                    userData.transitioning = false;
+                    to.enter(player);
+                    userData.gameMode = to;
+                }
 
-            @Override
-            public void failure() {
-                userData.transitioning = false;
+                @Override
+                public void failure() {
+                    userData.transitioning = false;
+                }
+            });
+        } catch (Throwable ex) {
+            try {
+            unsubscribe(player);
+            } catch (Throwable unex) {
+                unex.printStackTrace();
             }
-        });
+            subscribe(player);
+            Message.warn(player, "An error occured, you have forced to rejoin");
+            throw ex;
+        }
     }
 
     public void subscribe(Player player) {
