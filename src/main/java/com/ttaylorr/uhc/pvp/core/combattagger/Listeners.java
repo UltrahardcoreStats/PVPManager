@@ -4,6 +4,7 @@ import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
 import com.ttaylorr.uhc.pvp.util.Message;
 import nl.dykam.dev.reutil.events.AutoEventHandler;
 import nl.dykam.dev.reutil.events.Bind;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -41,6 +42,8 @@ public class Listeners implements Listener {
         if (event.getDamage() <= 0)
             return;
         if (!(projectile.getShooter() instanceof Player))
+            return;
+        if(projectile.getType() == EntityType.ENDER_PEARL)
             return;
         combatTagger.tag(defender, (Player) projectile.getShooter());
     }

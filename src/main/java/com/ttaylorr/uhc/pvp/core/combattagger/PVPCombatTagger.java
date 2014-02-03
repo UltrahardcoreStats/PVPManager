@@ -35,9 +35,6 @@ public class PVPCombatTagger implements CombatTagger {
         }
     }
 
-    private void tryTag(Player defender, Player attacker) {
-    }
-
     @Override
     public void untag(Player player) {
         PlayerTagData playerTagData = tagHandle.get(player);
