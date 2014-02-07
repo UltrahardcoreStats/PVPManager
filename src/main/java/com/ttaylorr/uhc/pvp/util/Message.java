@@ -1,8 +1,11 @@
 package com.ttaylorr.uhc.pvp.util;
 
+import com.ttaylorr.uhc.pvp.PVPManagerPlugin;
+import com.ttaylorr.uhc.pvp.core.UserData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class Message {
     public static void message(CommandSender sender, String message) {
@@ -27,12 +30,22 @@ public class Message {
 
     public static class Broadcast {
         public static void message(String message) {
-            Bukkit.broadcastMessage(ChatColor.AQUA + "[PVP]" + ChatColor.GRAY + " - " + ChatColor.RESET + message);
+            broadcastToSubscribed(ChatColor.AQUA + "[PVP]" + ChatColor.GRAY + " - " + ChatColor.RESET + message);
         }
 
         public static void message(ChatColor color, String message) {
-            Bukkit.broadcastMessage(ChatColor.AQUA + "[PVP]" + ChatColor.GRAY + " - " + ChatColor.RESET + colorize(color, message));
+            broadcastToSubscribed(ChatColor.AQUA + "[PVP]" + ChatColor.GRAY + " - " + ChatColor.RESET + colorize(color, message));
         }
+
+        private static void broadcastToSubscribed(String message) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                UserData userData = PVPManagerPlugin.get().getUserManager().getUserData(player);
+                if(userData.isSubscribed()) {
+                    player.sendMessage(message);
+                }
+            }
+        }
+
         public static void warn(String message) {
             message(ChatColor.GOLD, "⚠ " + ChatColor.RESET + message);
         }
