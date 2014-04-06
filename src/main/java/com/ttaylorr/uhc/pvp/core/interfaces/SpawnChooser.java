@@ -1,7 +1,7 @@
 package com.ttaylorr.uhc.pvp.core.interfaces;
 
-import com.ttaylorr.uhc.pvp.core.gamemodes.GameMode;
 import com.ttaylorr.uhc.pvp.core.SpawnManager;
+import com.ttaylorr.uhc.pvp.core.gamemodes.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -31,7 +31,7 @@ public abstract class SpawnChooser {
             for(Location loc : spawns) {
                 double closestDistance = Float.MAX_VALUE;
                 for(Player otherPlayer : context.gameMode.getPlayers()) {
-                    if(otherPlayer == player)
+                    if(otherPlayer == player || !otherPlayer.getWorld().getUID().equals(otherPlayer.getWorld().getUID()))
                         continue;
                     double distance = loc.distance(otherPlayer.getLocation());
                     if(distance < closestDistance)

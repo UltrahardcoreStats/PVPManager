@@ -26,6 +26,7 @@ import nl.dykam.dev.spector.SpectorShield;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.WorldCreator;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -49,6 +50,7 @@ public class PVPManagerPlugin extends JavaPlugin {
     Permission permission;
     private ComponentHandle<Player, UserSettings> settingsHandle;
     private ComponentManager componentManager;
+    private String world;
 
     public static PVPManagerPlugin get() {
         return instance;
@@ -66,10 +68,11 @@ public class PVPManagerPlugin extends JavaPlugin {
         initSerializables();
         setupPermission();
         initializeConfig();
-        if(Bukkit.getWorld(getConfig().getString("world")) != null)
-            initialize();
-        else
-            ReUtil.register(new WorldListener(this), this);
+        world = getConfig().getString("world");
+        if (Bukkit.getWorld(world) == null) {
+            Bukkit.createWorld(WorldCreator.name(world));
+        }
+        initialize();
     }
 
     private boolean setupPermission() {
@@ -211,7 +214,7 @@ public class PVPManagerPlugin extends JavaPlugin {
 
     void registerDefault(Object service) {
         if (service instanceof Persistent) persistencies.add((Persistent) service);
-        if(service instanceof CommandListener) {
+        if (service instanceof CommandListener) {
             CommandListener commandListener = (CommandListener)service;
             for(Command command : commandListener.getCommands()) {
                 registerCommand(command);
